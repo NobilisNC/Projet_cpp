@@ -22,3 +22,6 @@ HEADERS  += mainwindow.h \
 FORMS    += mainwindow.ui
 
 QMAKE_CXXFLAGS += -std=c++11
+
+DISTFILES += \
+    README.md
