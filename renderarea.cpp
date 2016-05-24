@@ -1,6 +1,8 @@
 #include "renderarea.h"
 
 #include <cmath>
+#include <iostream>
+
 
 
 
@@ -11,6 +13,7 @@ float TAB[] = { .2f, .25f, .5f, 1.f };
 
 
 
+
 RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     pen(nullptr),
     center(500, 300),
@@ -18,6 +21,7 @@ RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     unite(1.f , 1.f),
     base(1.f , 1.f),
     current_tab(3,3),
+    unite_per_pix(1,1),
     drag(false),
     old_cursor(-1,-1)
 {
@@ -26,6 +30,8 @@ RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     setAutoFillBackground(true);
     setCursor(Qt::CrossCursor);
     setMouseTracking(true);
+
+    QHBoxLayout* l = new QHBoxLayout(this);
 
 }
 
@@ -38,9 +44,9 @@ RenderArea::~RenderArea()
 void RenderArea::wheelEvent(QWheelEvent *event)
 {
     float delta = float(event->angleDelta().y())/380.f;
-    QPoint new_UNITE = QPoint(int(pix_unite.x() + delta *  RATIO), int(pix_unite.y() + delta * RATIO));
+    QPoint new_mouse_pos = QPoint(int(pix_unite.x() + delta *  RATIO), int(pix_unite.y() + delta * RATIO));
 
-    if ( new_UNITE.x()  < 50 ) { // DEZOOM
+    if ( new_mouse_pos.x()  < 50 ) { // DEZOOM
 
         if (current_tab.x() == NB_TAB ) {
             base.setX(base.x() * 10);
@@ -50,7 +56,7 @@ void RenderArea::wheelEvent(QWheelEvent *event)
         }
         pix_unite.setX(    pix_unite.x() + 1.5f * pix_unite.x()  );
         unite.setX( base.x() * TAB[current_tab.x()] );
-    } else if ( new_UNITE.x()  > 150 ) { //ZOOM
+    } else if ( new_mouse_pos.x()  > 150 ) { //ZOOM
 
         if (current_tab.x() == 0 ) {
             base.setX(base.x() / 10);
@@ -62,7 +68,7 @@ void RenderArea::wheelEvent(QWheelEvent *event)
 
         pix_unite.setX(    pix_unite.x() - .5f * pix_unite.x()  );
         unite.setX( base.x() * TAB[current_tab.x()] );
-    } else if (new_UNITE.y()  > 150 ) { // ZOOM
+    } else if (new_mouse_pos.y()  > 150 ) { // ZOOM
 
         if (current_tab.y() == 0 ) {
             base.setY( base.y() / 10);
@@ -73,7 +79,7 @@ void RenderArea::wheelEvent(QWheelEvent *event)
 
         pix_unite.setY(    pix_unite.y() - .5f * pix_unite.y()  );
         unite.setY( base.y() * TAB[current_tab.y()] );
-    } else if(new_UNITE.y()  < 50 ) { //DEZOOM
+    } else if(new_mouse_pos.y()  < 50 ) { //DEZOOM
 
         if (current_tab.y() == NB_TAB ) {
             base.setY( base.y() * 10);
@@ -91,8 +97,11 @@ void RenderArea::wheelEvent(QWheelEvent *event)
     }
 
 
+    /* CENTRAGE SOURIS */
+
 
     repaint();
+
 }
 
 void RenderArea::mousePressEvent(QMouseEvent * )
@@ -119,6 +128,7 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event)
         center.setY( center.y() - dist.y() );
     }
 
+    std::cerr << "!";
 
     update();
 
@@ -197,6 +207,29 @@ void RenderArea::drawAxes()
    }
 
 
+
+
+
+
+
+}
+
+float f(float x)
+{
+    return 3*x+2;
+}
+
+void RenderArea::drawFunctions()
+{
+    pen->setPen(QPen(Qt::blue,1));
+
+
+    for(float i = -center.x()*unite_per_pix.x(); i <= (-center.x()+width())*unite_per_pix.x(); i += unite_per_pix.x() ) {
+        float y = f(i);
+        pen->drawPoint(QPoint( i * pix_unite.x() /unite.x() , -y * pix_unite.y() /unite.y() ));
+    }
+
+
 }
 
 
@@ -208,7 +241,9 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
     pen->setPen(QPen(Qt::black,1));
     pen->translate(center);
 
+    unite_per_pix = QPointF( unite.x()/pix_unite.x(),  unite.y()/pix_unite.y() );
     drawAxes();
+    drawFunctions();
 
 
 

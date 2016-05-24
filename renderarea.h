@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <QWheelEvent>
 #include <QMouseEvent>
+#include <QLabel>
+#include <QHBoxLayout>
 
 class RenderArea : public QWidget
 {
@@ -22,6 +24,7 @@ public:
 
 private :
     void drawAxes();
+    void drawFunctions();
     void calcCoord();
 
 
@@ -35,6 +38,8 @@ private :
     QPointF unite;
     QPointF base;
     QPoint current_tab;
+    QPointF unite_per_pix;
+
 
     // DEPLACEMENT
     bool drag;
@@ -50,6 +55,8 @@ protected:
     void mousePressEvent(QMouseEvent * ) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *) Q_DECL_OVERRIDE;
+
+
 
 };
 
