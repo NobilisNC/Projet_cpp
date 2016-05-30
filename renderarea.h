@@ -5,8 +5,7 @@
 #include <QPainter>
 #include <QWheelEvent>
 #include <QMouseEvent>
-#include <QLabel>
-#include <QHBoxLayout>
+#include <QPainterPath>
 
 class RenderArea : public QWidget
 {
@@ -39,6 +38,7 @@ private :
     QPointF base;
     QPoint current_tab;
     QPointF unite_per_pix;
+
 
 
     // DEPLACEMENT

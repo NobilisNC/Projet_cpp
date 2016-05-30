@@ -7,7 +7,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     area = new RenderArea(this);
-    setMouseTracking(true);
     setCentralWidget(area);
 
 

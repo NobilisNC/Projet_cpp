@@ -12,16 +12,20 @@ TARGET = Traceur_courbes
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
+SOURCES += main.cpp \
         mainwindow.cpp \
-    renderarea.cpp
+    renderarea.cpp \
+    function.cpp \
+    rpn_utility.cpp
 
 HEADERS  += mainwindow.h \
-    renderarea.h
+    renderarea.h \
+    function.h \
+    rpn_utility.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
 
-QMAKE_CXXFLAGS += -std=c++11
+QMAKE_CXXFLAGS += -std=c++1y
 
 DISTFILES += \
     README.md
