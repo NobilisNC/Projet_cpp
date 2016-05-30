@@ -6,6 +6,7 @@
 #include <QWheelEvent>
 #include <QMouseEvent>
 #include <QPainterPath>
+#include <QLabel>
 
 class RenderArea : public QWidget
 {
@@ -44,6 +45,8 @@ private :
     // DEPLACEMENT
     bool drag;
     QPoint old_cursor;
+
+    QLabel* pos_label;
 
 
 

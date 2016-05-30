@@ -20,7 +20,8 @@ RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     base(1.f , 1.f),
     current_tab(2,2),
     drag(false),
-    old_cursor(-1,-1)
+    old_cursor(-1,-1),
+    pos_label(nullptr)
 {
     setBackgroundRole(QPalette::Base);
     setFixedSize(QSize(1000,600));
@@ -28,12 +29,20 @@ RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     setCursor(Qt::CrossCursor);
     setMouseTracking(true);
 
+
     QPalette pal = this->palette();
     pal.setColor(this->backgroundRole(), Qt::white);
     setPalette(pal);
 
+    pos_label = new QLabel("x:        y:       :::::",this);
+    pos_label->setFixedSize(200,25);
+    pos_label->move(width()-150, height() - 25);
+    pos_label->raise();
 
-    c = new Function("id", "1/x");
+
+
+
+    c = new Function("id", "x");
 
 
 }
@@ -81,6 +90,7 @@ void RenderArea::wheelEvent(QWheelEvent *event)
 
         pix_unite.setX(    pix_unite.x() - .5f * pix_unite.x()  );
         unite.setX( base.x() * TAB[current_tab.x()] );
+
     } else if (new_mouse_pos.y()  > 150 ) { // ZOOM
 
         if (current_tab.y() == 0 ) {
@@ -92,6 +102,7 @@ void RenderArea::wheelEvent(QWheelEvent *event)
 
         pix_unite.setY(    pix_unite.y() - .5f * pix_unite.y()  );
         unite.setY( base.y() * TAB[current_tab.y()] );
+
     } else if(new_mouse_pos.y()  < 50 ) { //DEZOOM
 
         if (current_tab.y() == NB_TAB ) {
@@ -109,24 +120,24 @@ void RenderArea::wheelEvent(QWheelEvent *event)
         pix_unite.setY(    pix_unite.y() + delta *  RATIO  );
     }
 
-    unite_per_pix = QPointF( unite.x()/pix_unite.x(),  unite.y()/pix_unite.y() );
+    //unite_per_pix = QPointF( unite.x()/pix_unite.x(),  unite.y()/pix_unite.y() );
 
     // On calcule ou se trouve les coordonnée logique du curseur avec les nouvelles variables
-    /*QPointF n_mouse_pos( (mouse_pos.x() - center.x()) * unite_per_pix.x(),
+   /* QPointF n_mouse_pos( (mouse_pos.x() - center.x()) * unite_per_pix.x(),
                         (center.y() - mouse_pos.y() ) * unite_per_pix.y() );
 
     QPoint distance( (log_mouse_pos.x() - n_mouse_pos.x())* pix_unite.x() /unite.x(),
                       (n_mouse_pos.y() - log_mouse_pos.y())* pix_unite.y() /unite.y());
 
-    //std::cerr << distance.x() << " - " << distance.y() << std::endl;
-
 
 
     center.setX( center.x() - distance.x() );
-    center.setY( center.y() -  distance.y() ); */
+    center.setY( center.y() -  distance.y() );
+    QCursor::setPos(event->globalX() + distance.x(), event->globalY() + distance.y());*/
 
     //QCursor::setPos( (event->globalX()/2 + width()) - distance.x(), event->globalY()/* + distance.y() */);
 
+    std::cerr << unite.x() << " - " << unite.y() << std::endl;
 
 
     update();
@@ -157,8 +168,15 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event)
         center.setY( center.y() - dist.y() );
     }
 
+    pos_label->setText(  QString("x:")
+                       + QString::number((event->pos().x() - center.x() ) * unite_per_pix.x(), 10, 4)
+                       + QString(" y:")
+                       + QString::number((center.y()-event->pos().y() )* unite_per_pix.y(), 10, 4)
+                      );
+
 
     update();
+    pos_label->update();
 
 }
 
@@ -168,25 +186,25 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event)
 void RenderArea::move_up()
 {
     center.setY(center.y()-10);
-    repaint();
+    update();
 }
 
 void RenderArea::move_down()
 {
      center.setY(center.y()+10);
-     repaint();
+     update();
 }
 
 void RenderArea::move_right()
 {
      center.setX(center.x()+10);
-     repaint();
+     update();
 }
 
 void RenderArea::move_left()
 {
      center.setX(center.x()-10);
-     repaint();
+     update();
 }
 
 void RenderArea::drawAxes()
@@ -242,7 +260,7 @@ void RenderArea::drawFunctions()
     QPainterPath path;
     bool path_begin = false;
 
-    for(float i = -center.x()*unite_per_pix.x(); i <= (-center.x()+width())*unite_per_pix.x(); i += unite_per_pix.x() ) {
+    for(float i = -center.x()*unite_per_pix.x(); i <= (width()-center.x())*unite_per_pix.x(); i += unite_per_pix.x() ) {
         float y = c->get_image(i);
         int coord_y = -y * pix_unite.y() /unite.y();
 
@@ -255,7 +273,6 @@ void RenderArea::drawFunctions()
             path_begin = false;
         } else
             path.lineTo(i * pix_unite.x() /unite.x() , -y * pix_unite.y() /unite.y() );
-            //pen->drawPoint(QPoint( i * pix_unite.x() /unite.x() , -y * pix_unite.y() /unite.y() ));
     }
 
     pen->drawPath(path);
