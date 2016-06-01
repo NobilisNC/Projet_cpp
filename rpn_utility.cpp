@@ -4,7 +4,7 @@
 
 
 
-std::map <char, std::pair<int, associativity>> TAB_OP =
+std::map <char, std::pair<int, associativity>> RPN_utility::TAB_OP =
         {
             {'+', {2, LEFT}},
             {'-', {2, LEFT}},
@@ -14,13 +14,25 @@ std::map <char, std::pair<int, associativity>> TAB_OP =
        };
 
 
-std::map< char, float(*)(const float& a, const float& b) > OPERATION = {
+std::map< char, float(*)(const float& a, const float& b) > RPN_utility::OPERATION = {
     {'+', [](const float& a, const float& b ){return a+b;}},
     {'-', [](const float& a, const float& b ){return a-b;}},
     {'/', [](const float& a, const float& b ){return a/b;}},
     {'*', [](const float& a, const float& b ){return a*b;}},
     {'^', [](const float& a, const float& b ){return float(pow(a,b));}}
     };
+
+
+std::map< std::string, float(*)(const float& a) > RPN_utility::COMMON_FUNCTION = {
+    {"cos",  [](const float& a ){return (float) cos(a);}},
+    {"sin",  [](const float& a ){return (float) sin(a);}},
+    {"sqrt", [](const float& a ){return (float) sqrt(a);}},
+    {"log",  [](const float& a ){return (float) log10(a);}},
+    {"ln",   [](const float& a ){return (float) log(a);}},
+    {"exp",   [](const float& a ){return (float) exp(a);}},
+    {"neg",   [](const float& a ){return (float) -a;}}
+};
+
 
 
 
@@ -116,7 +128,7 @@ void RPN_utility::second_parser(std::string& form)
     form = copy;
 }
 
-
+/* Parser permettant de voir si c'est une negation ou un moins */
 void RPN_utility::third_parser(std::string& form )
 {
     std::stringstream iss(form);
@@ -124,8 +136,14 @@ void RPN_utility::third_parser(std::string& form )
     std::string before, current;
 
     while(!iss.eof()) {
-        iss >> current;
-        if (current == "-" && !std::isdigit(before[0]) )  {
+          iss >> current;
+        if (current == "-" && ( before.empty() || isoperator(before[0]) || before[0] == '(' ) )
+        {
+            iss >> current;
+            output << "neg ( " << current << " ) ";
+
+
+        } else if (current == "-" && !std::isdigit(before[0]) )  {
            output << current;
 
         } else {
@@ -204,13 +222,12 @@ std::string RPN_utility::main_parser(const std::string& formula) {
 
 
         }
-        std::cerr << "----" << std::endl;
+
         token = "";
 
 
 
     }
-    std::cerr << "----><-----" << std::endl;
 
     while (!s.empty()) {
         output << s.top() << " ";
@@ -244,7 +261,17 @@ float RPN_utility::calc(std::map<char, float> var)
             stack.push(std::stof(token));
         else if ( token.length() == 1 && std::isalpha(token[0]) )
             stack.push( var[token[0]] );
-        else if ( isoperator(token[0]) ) {
+
+        else if (token.length() > 1) {
+
+        float a = stack.top();
+        stack.pop();
+
+
+
+        stack.push ( COMMON_FUNCTION[token](a) ) ;
+
+     } else if ( isoperator(token[0]) ) {
             float b = stack.top();
             stack.pop();
             float a = stack.top();
@@ -270,6 +297,7 @@ std::string RPN_utility::parse(std::string formula)
        first_parser(formula);
        second_parser(formula);
        third_parser(formula);
+
        std::string RPN_formula = main_parser(formula);
 
        return RPN_formula;

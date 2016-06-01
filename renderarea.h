@@ -7,6 +7,9 @@
 #include <QMouseEvent>
 #include <QPainterPath>
 #include <QLabel>
+#include <QVector>
+
+#include <abstractfunction.h>
 
 class RenderArea : public QWidget
 {
@@ -21,10 +24,17 @@ public:
     void move_left();
 
 
+public slots :
+    inline void add_function(AbstractFunction* f) { ext_function.append(f);  }
+
+
+
+
+
 
 private :
     void drawAxes();
-    void drawFunctions();
+    void drawFunction(AbstractFunction *f);
     void calcCoord();
 
 
@@ -47,6 +57,10 @@ private :
     QPoint old_cursor;
 
     QLabel* pos_label;
+
+
+    QVector<AbstractFunction*> ext_function;
+    QVector<AbstractFunction*> intern_func;
 
 
 

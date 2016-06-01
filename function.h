@@ -2,30 +2,32 @@
 #define FUNCTION_H
 
 #include <string>
+#include <iostream>
+
+#include <abstractfunction.h>
 #include <rpn_utility.h>
 
 
-class Function
+class Function : public AbstractFunction
 {
+    Q_OBJECT
 public :
-    Function(const std::string& /*id*/,
-             const std::string& /*raw_formula*/,
-             const std::string& /*rpn_formula*/ = std::string("")   );
+    explicit Function(const QString& _id, const QString & formula, QWidget* _parent = nullptr );
 
-    virtual ~Function();
+    ~Function();
 
-    virtual float get_image(float x);
+    static AbstractFunction* loadFunction(const QString& input, QWidget* parent = nullptr);
 
 
-    inline std::string getID() const {return id;}
-    inline void setID(const std::string& _id) {id=_id;}
+    QPoint* getPoints(QPoint min_max);
+
+protected :
+    QString id;
+    RPN_utility* rpn_u;
 
 
 
-
-private :
-    std::string id;
-    RPN_utility rpn_u;
+    void parse_function(QString&);
 
 
 };

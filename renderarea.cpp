@@ -24,7 +24,7 @@ RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     pos_label(nullptr)
 {
     setBackgroundRole(QPalette::Base);
-    setFixedSize(QSize(1000,600));
+    setMinimumSize(QSize(1000,600));
     setAutoFillBackground(true);
     setCursor(Qt::CrossCursor);
     setMouseTracking(true);
@@ -42,14 +42,14 @@ RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
 
 
 
-    c = new Function("id", "x");
-
 
 }
 
 RenderArea::~RenderArea()
 {
     delete pen;
+    for (auto i : intern_func)
+        delete i;
 }
 
 
@@ -120,24 +120,6 @@ void RenderArea::wheelEvent(QWheelEvent *event)
         pix_unite.setY(    pix_unite.y() + delta *  RATIO  );
     }
 
-    //unite_per_pix = QPointF( unite.x()/pix_unite.x(),  unite.y()/pix_unite.y() );
-
-    // On calcule ou se trouve les coordonnée logique du curseur avec les nouvelles variables
-   /* QPointF n_mouse_pos( (mouse_pos.x() - center.x()) * unite_per_pix.x(),
-                        (center.y() - mouse_pos.y() ) * unite_per_pix.y() );
-
-    QPoint distance( (log_mouse_pos.x() - n_mouse_pos.x())* pix_unite.x() /unite.x(),
-                      (n_mouse_pos.y() - log_mouse_pos.y())* pix_unite.y() /unite.y());
-
-
-
-    center.setX( center.x() - distance.x() );
-    center.setY( center.y() -  distance.y() );
-    QCursor::setPos(event->globalX() + distance.x(), event->globalY() + distance.y());*/
-
-    //QCursor::setPos( (event->globalX()/2 + width()) - distance.x(), event->globalY()/* + distance.y() */);
-
-    std::cerr << unite.x() << " - " << unite.y() << std::endl;
 
 
     update();
@@ -254,29 +236,33 @@ void RenderArea::drawAxes()
 }
 
 
-void RenderArea::drawFunctions()
+void RenderArea::drawFunction(AbstractFunction* f)
 {
-    pen->setPen(QPen(Qt::blue,1));
-    QPainterPath path;
-    bool path_begin = false;
+   /* if (f->isDrawable()) {
 
-    for(float i = -center.x()*unite_per_pix.x(); i <= (width()-center.x())*unite_per_pix.x(); i += unite_per_pix.x() ) {
-        float y = c->get_image(i);
-        int coord_y = -y * pix_unite.y() /unite.y();
+        pen->setPen(QPen(Qt::blue,1));
+        QPainterPath path;
+        bool path_begin = false;
 
-        if (!path_begin && y == y) {
-            path.moveTo(i * pix_unite.x() /unite.x() , coord_y);
-            path_begin = true;
-        } else if ( path_begin &&  !( coord_y > -center.y() && coord_y  < height() - center.y() ) ) {
-            pen->drawPath(path);
-            path = QPainterPath();
-            path_begin = false;
-        } else
-            path.lineTo(i * pix_unite.x() /unite.x() , -y * pix_unite.y() /unite.y() );
+
+        for(float i = -center.x()*unite_per_pix.x(); i <= (width()-center.x())*unite_per_pix.x(); i += unite_per_pix.x() ) {
+            float y = f->get_image(i);
+            int coord_y = -y * pix_unite.y() /unite.y();
+
+            if (!path_begin && y == y) {
+                path.moveTo(i * pix_unite.x() /unite.x() , coord_y);
+                path_begin = true;
+            } else if ( path_begin &&  !( coord_y > -center.y() && coord_y  < height() - center.y() ) ) {
+                pen->drawPath(path);
+                path = QPainterPath();
+                path_begin = false;
+            } else
+                path.lineTo(i * pix_unite.x() /unite.x() , -y * pix_unite.y() /unite.y() );
+        }
+
+        pen->drawPath(path);
     }
-
-    pen->drawPath(path);
-
+    */
 
 }
 
@@ -291,13 +277,19 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
 
     unite_per_pix = QPointF( unite.x()/pix_unite.x(),  unite.y()/pix_unite.y() );
     drawAxes();
-    drawFunctions();
+
+    for (auto i : ext_function)
+        drawFunction(i);
+
+    for(auto i : intern_func)
+        drawFunction(i);
 
 
 
     pen->end();
 
     delete pen;
+
 
 
 }

@@ -3,13 +3,20 @@
 
 #include <QMainWindow>
 #include <QHBoxLayout>
-#include <renderarea.h>
+#include <QVBoxLayout>
+#include <QLabel>
+#include <QString>
+#include <QLineEdit>
+#include <QVector>
+#include <QPushButton>
 
-namespace Ui {
-class MainWindow;
-}
+#include <renderarea.h>
+#include <abstractfunction.h>
+
+
 
 class MainWindow : public QMainWindow
+
 {
     Q_OBJECT
 
@@ -18,8 +25,24 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
     RenderArea* area;
+    QLineEdit* formula;
+    QPushButton* bnew_func;
+    QWidget* main_label;
+    QVBoxLayout* main_layout;
+    QHBoxLayout* top_layout;
+    QHBoxLayout* bottom_layout;
+    QVBoxLayout* func_layout;
+
+
+
+public slots :
+    void new_func();
+
+
+private :
+    QVector<AbstractFunction*> storage;
+
 };
 
 #endif // MAINWINDOW_H

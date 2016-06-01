@@ -16,7 +16,7 @@ enum associativity { NONE, LEFT, RIGHT };
 class RPN_utility
 {
 public:
-    RPN_utility(const std::string&, const std::string& = std::string("") );
+    RPN_utility(const std::string& raw, const std::string& rpn = std::string(""));
 
 
 
@@ -31,7 +31,7 @@ public:
 
 
     /* Parser */
-    static std::string parse(std::string);
+    std::string parse(std::string);
     static bool isnumber(const std::string&);
     static bool isoperator(const char);
 
@@ -41,10 +41,14 @@ private :
 
 
 
-    static void first_parser(std::string&);
-    static void second_parser(std::string&);
-    static void third_parser(std::string&);
-    static std::string main_parser(const std::string& formula);
+    void first_parser(std::string&);
+    void second_parser(std::string&);
+    void third_parser(std::string&);
+    std::string main_parser(const std::string& formula);
+
+    static std::map< char, float(*)(const float& a, const float& b) > OPERATION;
+    static std::map <char, std::pair<int, associativity>> TAB_OP;
+    static std::map< std::string, float(*)(const float& a) > COMMON_FUNCTION;
 
 
 };

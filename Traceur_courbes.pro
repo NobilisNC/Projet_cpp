@@ -16,12 +16,16 @@ SOURCES += main.cpp \
         mainwindow.cpp \
     renderarea.cpp \
     function.cpp \
-    rpn_utility.cpp
+    rpn_utility.cpp \
+    parametricfunction.cpp \
+    abstractfunction.cpp
 
 HEADERS  += mainwindow.h \
     renderarea.h \
     function.h \
-    rpn_utility.h
+    rpn_utility.h \
+    parametricfunction.h \
+    abstractfunction.h
 
 FORMS    +=
 
