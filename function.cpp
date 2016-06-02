@@ -4,16 +4,21 @@
 Function::Function(const QString& _id, const QString & formula, QWidget* _parent)
     :
     AbstractFunction(_id, _parent),
+    equation(nullptr),
     rpn_u(nullptr)
 {
-
-  id_func->setText(QString("y=%1").arg(formula));
   rpn_u = new RPN_utility( formula.toStdString() );
-}
 
+
+  equation = new QLabel(QString("y=%1").arg(QString::fromLocal8Bit(rpn_u->getRawForm().c_str())));
+  bottom_layout->addWidget(equation);
+
+}
 
 Function::~Function()
 {
+    delete rpn_u;
+    delete equation;
 }
 
 AbstractFunction *Function::loadFunction(const QString & input, QWidget *parent)
@@ -23,9 +28,19 @@ AbstractFunction *Function::loadFunction(const QString & input, QWidget *parent)
 
 }
 
-QPoint *Function::getPoints(QPoint min_max)
+std::pair<unsigned, QPointF *> Function::getPoints(float min, float max)
 {
+    QPointF* tab = new QPointF[FUNCTION_PRECISION];
+    float grad =(  max - min  ) / FUNCTION_PRECISION;
 
+    float x = min;
+
+    for (unsigned i = 0; i < FUNCTION_PRECISION; i ++) {
+        tab[i] = QPointF(x, rpn_u->calc(x) );
+        x+= grad;
+    }
+
+    return std::make_pair(FUNCTION_PRECISION,tab);
 }
 
 

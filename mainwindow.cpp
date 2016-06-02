@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
         //Parameters
 
 
-
+    func_layout->setAlignment(func_layout, Qt::AlignTop);
 
     //TOP LAYOUT
     area = new RenderArea(this);
@@ -49,19 +49,26 @@ MainWindow::MainWindow(QWidget *parent) :
     main_layout->addLayout(bottom_layout);
 
 
-
     //MAIN_LABEL
     main_label->setLayout(main_layout);
 
-
-
-
     setCentralWidget(main_label);
+
+    file_menu = new QMenu("Fichier",this);
+    open_file = new QAction("Ouvrir", this);
+    open_file->setShortcut(QKeySequence::Open);
+
+    file_menu->addAction(open_file);
+
+
+    menuBar()->addMenu(file_menu);
+
+
 
 
 
     QObject::connect(bnew_func,SIGNAL(clicked(bool)), this, SLOT(new_func()));
-
+    QObject::connect(open_file, SIGNAL(triggered(bool)), this, SLOT(load_file()));
 
 }
 
@@ -71,15 +78,58 @@ MainWindow::~MainWindow()
     delete main_label;
     delete main_layout;
     delete func_layout;
+    delete file_menu;
+    delete quit;
+    delete open_file;
 }
 
 
 void MainWindow::new_func()
 {
-    AbstractFunction* f = AbstractFunction::loadFunction(formula->text());
+    create_function(formula->text());
+}
+
+void MainWindow::load_file()
+{
+    QString path = QFileDialog::getOpenFileName(this,"Ouvrir un fichier fonction");
+
+    if (path.isEmpty())
+        return;
+
+    QFile file(path);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return;
+    }
+
+    QTextStream stream(&file);
+
+    while (!stream.atEnd()) {
+        QString line = stream.readLine();
+        create_function(line);
+    }
+
+
+
+
+}
+
+void MainWindow::create_function(const QString &input)
+{
+    try {
+
+    AbstractFunction* f = AbstractFunction::loadFunction(input,this);
     storage.append(f);
     area->add_function(f);
+
+
     func_layout->addWidget(f);
 
+    //func_layout->setAlignment(f, Qt::AlignTop);
+
+
+    } catch (...) {
+        std::cerr << "CACA" << std::endl;
+    }
 
 }

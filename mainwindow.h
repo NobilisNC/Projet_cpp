@@ -9,6 +9,10 @@
 #include <QLineEdit>
 #include <QVector>
 #include <QPushButton>
+#include <QMenu>
+#include <QAction>
+#include <QFileDialog>
+#include <QErrorMessage>
 
 #include <renderarea.h>
 #include <abstractfunction.h>
@@ -34,14 +38,20 @@ private:
     QHBoxLayout* bottom_layout;
     QVBoxLayout* func_layout;
 
+    QMenu* file_menu;
+    QAction* open_file;
+    QAction* quit;
 
 
 public slots :
     void new_func();
+    void load_file();
 
 
 private :
     QVector<AbstractFunction*> storage;
+
+    void create_function(const QString& input);
 
 };
 

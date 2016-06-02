@@ -8,9 +8,6 @@ float RATIO = 5;
 int NB_TAB = 2;
 float TAB[] = { /*.2f,*/ .25f, .5f, 1.f };
 
-Function* c = nullptr;
-
-
 
 RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     pen(nullptr),
@@ -119,6 +116,13 @@ void RenderArea::wheelEvent(QWheelEvent *event)
         pix_unite.setX(    pix_unite.x() + delta *  RATIO  );
         pix_unite.setY(    pix_unite.y() + delta *  RATIO  );
     }
+
+    /* Axes synchronisés */
+    unite.setY(unite.x());
+    pix_unite.setY(pix_unite.x());
+    unite_per_pix.setY(unite_per_pix.y());
+    base.setY(base.x());
+    current_tab.setY(current_tab.x());
 
 
 
@@ -238,31 +242,36 @@ void RenderArea::drawAxes()
 
 void RenderArea::drawFunction(AbstractFunction* f)
 {
-   /* if (f->isDrawable()) {
+    if (f->isDrawable()) {
 
-        pen->setPen(QPen(Qt::blue,1));
+        pen->setPen(QPen(QBrush(f->getColor()),1));
         QPainterPath path;
         bool path_begin = false;
 
+        std::pair<unsigned, QPointF*>  pair = f->getPoints(-center.x()*unite_per_pix.x(), (width()-center.x())*unite_per_pix.x());
 
-        for(float i = -center.x()*unite_per_pix.x(); i <= (width()-center.x())*unite_per_pix.x(); i += unite_per_pix.x() ) {
-            float y = f->get_image(i);
-            int coord_y = -y * pix_unite.y() /unite.y();
+        QPointF* tab = pair.second;
 
-            if (!path_begin && y == y) {
-                path.moveTo(i * pix_unite.x() /unite.x() , coord_y);
+
+        for(unsigned i = 0; i < pair.first; i++ ) {
+;
+
+            int coord_y = -tab[i].y() * pix_unite.y() /unite.y();
+
+            if (!path_begin && tab[i].y() == tab[i].y()) {
+                path.moveTo(tab[i].x() * pix_unite.x() /unite.x() , coord_y);
                 path_begin = true;
-            } else if ( path_begin &&  !( coord_y > -center.y() && coord_y  < height() - center.y() ) ) {
+            } else if ( path_begin &&  !( coord_y >= -center.y() && coord_y  <= height() - center.y()) ) {
                 pen->drawPath(path);
                 path = QPainterPath();
                 path_begin = false;
             } else
-                path.lineTo(i * pix_unite.x() /unite.x() , -y * pix_unite.y() /unite.y() );
+                path.lineTo(tab[i].x() * pix_unite.x() /unite.x() , -tab[i].y() * pix_unite.y() /unite.y() );
         }
 
         pen->drawPath(path);
     }
-    */
+
 
 }
 

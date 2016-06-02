@@ -25,11 +25,13 @@ HEADERS  += mainwindow.h \
     function.h \
     rpn_utility.h \
     parametricfunction.h \
-    abstractfunction.h
+    abstractfunction.h \
+    defines.h
 
 FORMS    +=
 
 QMAKE_CXXFLAGS += -std=c++1y
 
 DISTFILES += \
-    README.md
+    README.md \
+    test_functions

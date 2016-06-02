@@ -247,7 +247,7 @@ RPN_utility::RPN_utility(const std::string & raw, const std::string & rpn) :
 
 }
 
-float RPN_utility::calc(std::map<char, float> var)
+float RPN_utility::calc(float x)
 {
     std::stack<float> stack;
     std::stringstream ss(rpn_formula);
@@ -260,7 +260,7 @@ float RPN_utility::calc(std::map<char, float> var)
         if ( isnumber(token) )
             stack.push(std::stof(token));
         else if ( token.length() == 1 && std::isalpha(token[0]) )
-            stack.push( var[token[0]] );
+            stack.push( x );
 
         else if (token.length() > 1) {
 
@@ -292,13 +292,12 @@ void RPN_utility::setFormula(const std::string &new_form)
 
 std::string RPN_utility::parse(std::string formula)
 {
-
-
        first_parser(formula);
        second_parser(formula);
        third_parser(formula);
 
        std::string RPN_formula = main_parser(formula);
+
 
        return RPN_formula;
 }

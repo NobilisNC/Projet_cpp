@@ -6,6 +6,7 @@
 
 #include <abstractfunction.h>
 #include <rpn_utility.h>
+#include <defines.h>
 
 
 class Function : public AbstractFunction
@@ -19,10 +20,11 @@ public :
     static AbstractFunction* loadFunction(const QString& input, QWidget* parent = nullptr);
 
 
-    QPoint* getPoints(QPoint min_max);
+    std::pair<unsigned, QPointF*> getPoints(float min, float max);
 
 protected :
     QString id;
+    QLabel* equation;
     RPN_utility* rpn_u;
 
 

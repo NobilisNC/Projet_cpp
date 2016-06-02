@@ -22,7 +22,7 @@ public:
 
 
 
-    float calc(std::map<char, float>);
+    float calc(float x);
 
     void setFormula(const std::string& new_form);
     inline std::string getRawForm() const {return raw_formula;}
