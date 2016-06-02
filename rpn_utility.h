@@ -8,6 +8,9 @@
 #include <sstream>
 #include <utility>
 #include <algorithm>
+#include <QStringList>
+#include <QTextStream>
+#include <QStack>
 #include <cmath>
 
 
@@ -16,7 +19,7 @@ enum associativity { NONE, LEFT, RIGHT };
 class RPN_utility
 {
 public:
-    RPN_utility(const std::string& raw, const std::string& rpn = std::string(""));
+    RPN_utility(const QString& raw, const QString& rpn = QString(""));
 
 
 
@@ -24,31 +27,32 @@ public:
 
     float calc(float x);
 
-    void setFormula(const std::string& new_form);
-    inline std::string getRawForm() const {return raw_formula;}
+    void setFormula(const QString& new_form);
+    inline QString getRawForm() const {return raw_formula;}
 
 
 
 
     /* Parser */
-    std::string parse(std::string);
-    static bool isnumber(const std::string&);
-    static bool isoperator(const char);
+    QString parse(QString);
+    static bool isnumber(const QString&);
+    static bool isoperator(const QString&);
+    static bool iscommonfunction(const QString &);
 
 private :
-    std::string raw_formula;
-    std::string rpn_formula;
+    QString raw_formula;
+    QStringList rpn_formula;
 
 
 
-    void first_parser(std::string&);
-    void second_parser(std::string&);
-    void third_parser(std::string&);
-    std::string main_parser(const std::string& formula);
+    void first_parser(QString &);
+    void second_parser(QString&);
+    void third_parser(QString&);
+    QString main_parser(QString& formula);
 
-    static std::map< char, float(*)(const float& a, const float& b) > OPERATION;
-    static std::map <char, std::pair<int, associativity>> TAB_OP;
-    static std::map< std::string, float(*)(const float& a) > COMMON_FUNCTION;
+    static std::map< QChar, float(*)(const float& a, const float& b) > OPERATION;
+    static std::map <QChar, std::pair<int, associativity>> TAB_OP;
+    static std::map< QString, float(*)(const float& a) > COMMON_FUNCTION;
 
 
 };

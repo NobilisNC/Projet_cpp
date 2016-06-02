@@ -9,10 +9,10 @@ Function::Function(const QString& _id, const QString & formula, QWidget* _parent
 {
    setMinimumSize(QSize(250, 60));
 
-  rpn_u = new RPN_utility( formula.toStdString() );
+  rpn_u = new RPN_utility( formula );
 
 
-  equation = new QLabel(QString("y=%1").arg(QString::fromLocal8Bit(rpn_u->getRawForm().c_str())));
+  equation = new QLabel(QString("y=%1").arg(rpn_u->getRawForm()));
   bottom_layout->addWidget(equation);
 
 }

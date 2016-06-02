@@ -1,10 +1,6 @@
 #include "rpn_utility.h"
 
-
-
-
-
-std::map <char, std::pair<int, associativity>> RPN_utility::TAB_OP =
+std::map < QChar, std::pair<int, associativity>> RPN_utility::TAB_OP =
         {
             {'+', {2, LEFT}},
             {'-', {2, LEFT}},
@@ -14,7 +10,7 @@ std::map <char, std::pair<int, associativity>> RPN_utility::TAB_OP =
        };
 
 
-std::map< char, float(*)(const float& a, const float& b) > RPN_utility::OPERATION = {
+std::map< QChar, float(*)(const float& a, const float& b) > RPN_utility::OPERATION = {
     {'+', [](const float& a, const float& b ){return a+b;}},
     {'-', [](const float& a, const float& b ){return a-b;}},
     {'/', [](const float& a, const float& b ){return a/b;}},
@@ -23,7 +19,7 @@ std::map< char, float(*)(const float& a, const float& b) > RPN_utility::OPERATIO
     };
 
 
-std::map< std::string, float(*)(const float& a) > RPN_utility::COMMON_FUNCTION = {
+std::map< QString, float(*)(const float& a) > RPN_utility::COMMON_FUNCTION = {
     {"cos",  [](const float& a ){return (float) cos(a);}},
     {"sin",  [](const float& a ){return (float) sin(a);}},
     {"sqrt", [](const float& a ){return (float) sqrt(a);}},
@@ -34,17 +30,20 @@ std::map< std::string, float(*)(const float& a) > RPN_utility::COMMON_FUNCTION =
 };
 
 
-
-
-bool RPN_utility::isoperator(const char c)
+bool RPN_utility::isoperator(const QString &c)
 {
-    return c == '*' || c == '/' || c == '+' || c == '-' || c =='^' ;
+    return c == "*" || c == "/" || c == "+" || c == "-" || c == "^" ;
 
 }
 
-bool RPN_utility::isnumber(const std::string& s)
+bool RPN_utility::iscommonfunction(const QString & str)
 {
-    if (s.empty() || (s[0] != '-' && s[0] != '+' && !std::isdigit(s[0]) ))
+    return COMMON_FUNCTION.find(str) != COMMON_FUNCTION.end();
+}
+
+bool RPN_utility::isnumber(const QString &s)
+{
+    if (s.isEmpty() || (s[0] != '-' && s[0] != '+' && !s[0].isNumber() ))
         return false;
 
     if (s.length() == 1 && ( s[0] == '-' || s[0] == '+' ) )
@@ -52,7 +51,7 @@ bool RPN_utility::isnumber(const std::string& s)
 
     for ( auto i : s )
     {
-        if (i != '-' && i != '.' && !std::isdigit(i) ) {
+        if (i != '-' && i != '.' && !i.isNumber() ) {
             return false;
         }
 
@@ -63,37 +62,66 @@ bool RPN_utility::isnumber(const std::string& s)
 }
 
 
+
+/* **** ***** ***** ***** ***** ***** ***** ***** */
+
+
+RPN_utility::RPN_utility(const QString & raw, const QString & rpn) :
+    raw_formula(raw), rpn_formula( rpn.split(QChar(' '), QString::SkipEmptyParts ) )
+{
+    if (rpn_formula.empty())
+        rpn_formula = parse(raw).split(QChar(' '), QString::SkipEmptyParts);
+
+}
+
+QString RPN_utility::parse(QString formula)
+{
+       first_parser(formula);
+       second_parser(formula);
+       third_parser(formula);
+
+
+       QString RPN_formula = main_parser(formula);
+
+
+
+
+       return RPN_formula;
+}
+
+
+
+
 /* Parser permettant l'ajout des * entre
  *  - Constante * variable
  *  - Constante/variable * (...)
  */
-void RPN_utility::first_parser(std::string& form)
+void RPN_utility::first_parser(QString& form)
 {
+
     //On supprime les blancs
-    form.erase(std::remove_if(form.begin(),
-                              form.end(),
-                              [](char x){return std::isspace(x);}),
-               form.end());
+    form.toLower();
+    form.trimmed();
 
+    QString copy(form);
 
-    std::string copy(form);
 
     unsigned modif = 0;
 
-    for(unsigned i = 1; i < form.length(); i++) {
+    for(unsigned i = 1; i < (unsigned) form.length(); i++) {
 
         //On détecte si c'est un caractère
-        if ( form[i] >= 'a' && std::isalpha(form[i])) {
+        if ( form[i].isLetter() ) {
             //On check si le caractère précédant est un chiffre et on ajoute une étoile
-            if(std::isdigit(form[i-1]) ) {
-                    copy.insert(i + modif,"*");
+            if(form[i-1].isNumber() ) {
+                    copy.insert(i + modif, "*");
                     modif++;
             }
        //On detecte si c'est une parenthèse ouvrante
          } else if (form[i] == '(' ) {
             //On check si le carartère précedant est un chiffre
-            if(std::isdigit(form[i-1]) ) {
-                copy.insert(i + modif,"*");
+            if( form[i-1].isNumber() ) {
+                copy.insert(i + modif, "*");
                 modif++;
             }
         }
@@ -108,14 +136,15 @@ void RPN_utility::first_parser(std::string& form)
  *  - 2*x --> 2 * x
  *
  */
-void RPN_utility::second_parser(std::string& form)
+void RPN_utility::second_parser(QString &form)
 {
-    std::string copy(form);
+
+    QString copy(form);
     unsigned modif = 0;
 
-    for (unsigned i = 0; i < form.length(); i++) {
+    for (unsigned i = 0; i < (unsigned) form.length(); i++) {
 
-        if (isoperator(form[i]) || form[i] == '(' || form[i] == ')' || form[i] == ',')
+        if (isoperator(QString(form[i])) || form[i] == '(' || form[i] == ')' || form[i] == ',')
         {
             copy.insert(i+modif, " " );
             modif ++;
@@ -129,51 +158,78 @@ void RPN_utility::second_parser(std::string& form)
 }
 
 /* Parser permettant de voir si c'est une negation ou un moins */
-void RPN_utility::third_parser(std::string& form )
+void RPN_utility::third_parser(QString &form )
 {
-    std::stringstream iss(form);
-    std::stringstream output;
-    std::string before, current;
 
-    while(!iss.eof()) {
-          iss >> current;
-        if (current == "-" && ( before.empty() || isoperator(before[0]) || before[0] == '(' ) )
+    QStringList iss = form.split(QChar(' '), QString::SkipEmptyParts);
+    QTextStream output(&form);
+    form.clear();
+
+    for (unsigned i = 0; i  < (unsigned) iss.length(); i++ )
+    {
+
+        //if ( i==0 || (iss[i] == "-" && (iss[i-1].isEmpty() || isoperator(iss[i-1]) || iss[i-1] == "(" ) ))
+        if (iss[i] == "-" && !isnumber(iss[i+1]))
         {
-            iss >> current;
-            output << "neg ( " << current << " ) ";
+            if (iss[i+1].length() > 1) {
+                output << "neg ( " << iss[i+1] << " ";
+                unsigned o = i+2;
+                unsigned cpt_para = 0;
+                bool ok;
+                while ( !ok ) {
+                    if (iss[o] == "(")
+                        cpt_para++;
+                    else if (iss[o] == ")")
+                        cpt_para--;
+
+                    output << iss[o] << " ";
+
+                    o++;
+                    ok = cpt_para == 0;
+                }
+
+                i = o;
+                output << " ) ";
+
+            } else {
+            output << "neg ( " << iss[i+1] << " ) ";
+            i++;
+            }
 
 
-        } else if (current == "-" && !std::isdigit(before[0]) )  {
-           output << current;
+        } else if (iss[i] == "-" && !iss[i][0].isNumber() )  {
+           output << iss[i];
 
         } else {
-          output << current << " ";
+          output << iss[i] << " ";
         }
 
-        before = current;
-        current = "";
     }
 
-    form = output.str();
+
+    output.flush();
 
 }
 
 
-std::string RPN_utility::main_parser(const std::string& formula) {
-    std::stringstream iss;
-    iss << formula;
+QString RPN_utility::main_parser(QString &formula) {
 
-    std::stringstream output;
-    std::stack <std::string> s;
 
-    std::string token;
-    int i = 0;
-    while(!iss.eof())
+    QString output_string;
+    QTextStream iss(&formula);
+
+    QTextStream output(&output_string);
+    QStack <QString> s;
+
+
+    QString token;
+
+    while(!iss.atEnd())
     {
         iss >> token;
 
         //If token is a number
-        if( isnumber(token) || ( token.length() == 1 &&  std::isalpha(token[0]) ) ) {
+        if( isnumber(token) || ( token.length() == 1 &&  token[0].isLetter() ) ) {
             output << token << " ";
 
         //if function separator
@@ -185,11 +241,11 @@ std::string RPN_utility::main_parser(const std::string& formula) {
             }
 
         //If token is an operator
-        } else if( token.length() == 1 && isoperator(token[0]) ) {
+        } else if( token.length() == 1 && isoperator(token) ) {
 
-                       while ( !s.empty() && ( TAB_OP[token[0]].second == LEFT && TAB_OP[token[0]].first <= TAB_OP[s.top()[0]].first
+                       while ( !s.isEmpty() && ( (TAB_OP[token[0]].second == LEFT && TAB_OP[token[0]].first <= TAB_OP[s.top()[0]].first)
                                         ||
-                                    TAB_OP[token[0]].second == RIGHT && TAB_OP[token[0]].first < TAB_OP[s.top()[0]].first
+                                    (TAB_OP[token[0]].second == RIGHT && TAB_OP[token[0]].first < TAB_OP[s.top()[0]].first)
                                   )
                   ) {
                 output << s.top() << " ";
@@ -234,32 +290,25 @@ std::string RPN_utility::main_parser(const std::string& formula) {
         s.pop();
     }
 
-    return output.str();
+    output.flush();
+    return output_string;
 
 }
 
 
-RPN_utility::RPN_utility(const std::string & raw, const std::string & rpn) :
-    raw_formula(raw), rpn_formula(rpn)
-{
-    if (rpn_formula.empty())
-        rpn_formula = parse(raw);
 
-}
 
 float RPN_utility::calc(float x)
 {
     std::stack<float> stack;
-    std::stringstream ss(rpn_formula);
+    //std::stringstream ss(rpn_formula);
 
-    while(!ss.eof())
+    for (auto token : rpn_formula)
     {
-        std::string token;
-        ss >> token;
 
         if ( isnumber(token) )
-            stack.push(std::stof(token));
-        else if ( token.length() == 1 && std::isalpha(token[0]) )
+            stack.push(std::stof(token.toStdString()));
+        else if ( token.length() == 1 && std::isalpha( token[0].toLatin1() ) )
             stack.push( x );
 
         else if (token.length() > 1) {
@@ -271,13 +320,13 @@ float RPN_utility::calc(float x)
 
         stack.push ( COMMON_FUNCTION[token](a) ) ;
 
-     } else if ( isoperator(token[0]) ) {
+     } else if ( isoperator(token ) ) {
             float b = stack.top();
             stack.pop();
             float a = stack.top();
             stack.pop();
 
-            stack.push ( OPERATION[ token[0] ](a,b) );
+            stack.push ( OPERATION[ token[0].toLatin1() ](a,b) );
         }
 
     }
@@ -285,19 +334,10 @@ float RPN_utility::calc(float x)
     return stack.top();
 }
 
-void RPN_utility::setFormula(const std::string &new_form)
+void RPN_utility::setFormula(const QString &new_form)
 {
+    Q_UNUSED(new_form)
 
 }
 
-std::string RPN_utility::parse(std::string formula)
-{
-       first_parser(formula);
-       second_parser(formula);
-       third_parser(formula);
 
-       std::string RPN_formula = main_parser(formula);
-
-
-       return RPN_formula;
-}

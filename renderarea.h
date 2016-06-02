@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QVector>
 
+#include <defines.h>
 #include <abstractfunction.h>
 
 class RenderArea : public QWidget

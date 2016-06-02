@@ -120,6 +120,7 @@ void AbstractFunction::new_select(AbstractFunction * new_func)
 void AbstractFunction::paintEvent(QPaintEvent *)
 {
     QPainter pen(this);
+
     if (is_selected)
         pen.fillRect(0, 0, width(), height(), 0xA0A9AA);
     else

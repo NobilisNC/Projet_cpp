@@ -1,3 +1,11 @@
 Function f1 3x+2
 Parametric Cercle sin(t) cos(t) [0;12]
 Function caca -x
+Function f1 x/2+1
+Function f2 x^2-2
+Function f3 1/2*x^3-1/2*x^2-x
+Function f4 sqrt(x+2)
+Function f5 1/x
+Parametric Lissajous sin(t) sin((3/2)*t) [0;12.9]
+Parametric Spirale (x/3)*cos(3x) (x/3)*sin(3x) [0;3.28]
+Parametric Rose cos(5/2*x)*cos(x) cos(5/2*x)*sin(x) [0;12.5]

@@ -5,10 +5,14 @@
 #include <QTime>
 
 
+QColor randomColor();
+
+/* *** RenderArea *** */
+const float RATIO = 5;
+const unsigned int NB_TAB = 2;
+const float TAB[] = { .25f, .5f, 1.f };
 const unsigned int FUNCTION_PRECISION = 150;
 const unsigned int PARAMETRIC_PRECISION = 300;
-
-QColor randomColor();
 
 
 

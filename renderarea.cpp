@@ -4,11 +4,6 @@
 #include <iostream>
 #include "function.h"
 
-float RATIO = 5;
-int NB_TAB = 2;
-float TAB[] = { /*.2f,*/ .25f, .5f, 1.f };
-
-
 RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     pen(nullptr),
     center(500, 300),
@@ -278,7 +273,7 @@ void RenderArea::drawFunction(AbstractFunction* f)
             pen->setPen(QPen(QBrush(f->getColor()), 0.5, Qt::DashDotDotLine));
 
             float y = f->getOnePoint( (old_cursor.x() -center.x() ) *unite_per_pix.x() );
-            pen->drawText(QRect(-center.x(), -center.y(), 100, 50),
+            pen->drawText(QRect(-center.x(), -center.y(), 150, 50),
                           QString("f(%1)=%2").arg(
                               QString::number( (old_cursor.x() - center.x()  )* unite_per_pix.x()) ,
                               QString::number(y))
@@ -289,8 +284,6 @@ void RenderArea::drawFunction(AbstractFunction* f)
             pen->drawLine( QPoint( old_cursor.x()-center.x(), 0),
                            QPoint( old_cursor.x()-center.x(), -y / unite_per_pix.y() )
                          );
-            /*pen->setBrush(QColor(f->getColor()));
-            pen->drawEllipse(QPoint(old_cursor.x()-center.x(), -y / unite_per_pix.y()), 3, 3); */
 
 
         }
@@ -305,6 +298,7 @@ void RenderArea::drawFunction(AbstractFunction* f)
 
 void RenderArea::paintEvent(QPaintEvent *  event )
 {
+    Q_UNUSED(event)
 
     pen = new QPainter(this);
 

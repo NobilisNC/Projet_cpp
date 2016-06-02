@@ -13,7 +13,7 @@ ParametricFunction::ParametricFunction(const QString& id, const QString& x_formu
     points = new QPointF[PARAMETRIC_PRECISION];
     float grad = ( bornes.y() - bornes.x() ) / PARAMETRIC_PRECISION;
 
-    RPN_utility* rpn = new RPN_utility(x_formula.toStdString());
+    RPN_utility* rpn = new RPN_utility(x_formula);
 
     float t = grad + bornes.x();
     for (unsigned i = 0; i < PARAMETRIC_PRECISION; i++) {
@@ -21,7 +21,7 @@ ParametricFunction::ParametricFunction(const QString& id, const QString& x_formu
         t += grad;
     }
     delete rpn;
-    rpn = new RPN_utility(y_formula.toStdString());
+    rpn = new RPN_utility(y_formula);
 
     t = grad + bornes.x();
     for (unsigned i = 0; i < PARAMETRIC_PRECISION; i++) {
@@ -61,10 +61,13 @@ ParametricFunction::~ParametricFunction()
 
 std::pair<unsigned, QPointF*> ParametricFunction::getPoints(float min, float max)
 {
+    Q_UNUSED(min)
+    Q_UNUSED(max)
     return std::make_pair( PARAMETRIC_PRECISION, points) ;
 }
 
 float ParametricFunction::getOnePoint(float x)
 {
+    Q_UNUSED(x)
     return .0f;
 }
