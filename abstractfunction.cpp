@@ -11,7 +11,9 @@ AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
       main_layout(nullptr),
       top_layout(nullptr),
       check(nullptr),
-      box(nullptr),
+      color_button(nullptr),
+      icon_color(nullptr),
+      pix_color(nullptr),
       id_func(nullptr),
       bottom_layout(nullptr)
 {
@@ -28,21 +30,16 @@ AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
     id_func = new QLabel;
     id_func->setText(QString("%1").arg(id));
 
-    //BOX
-    box = new QComboBox;
-        //PARAMETERS
-        QPixmap color_Icon(10,8);
+    pix_color = new QPixmap(10,10);
+    icon_color = new QIcon(*pix_color);
 
-        for (unsigned i = 0; i < 5; i++) {
-            color_Icon.fill(COLOR[i]);
-            box->insertItem(i, *(new QIcon(color_Icon)) , QString(""));
-        }
+    color_button = new QPushButton(*icon_color,QString(""), this);
 
 
     setMinimumWidth(250);
 
     top_layout->addWidget(check,0,Qt::AlignLeft);
-    top_layout->addWidget(box,0,Qt::AlignLeft);
+    top_layout->addWidget(color_button,0,Qt::AlignLeft);
     top_layout->addWidget(id_func,0,Qt::AlignLeft);
     top_layout->addSpacing(width() /2 );
 
@@ -53,6 +50,7 @@ AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
     setFixedSize(QSize(250, 60));
 
     QObject::connect(this, SIGNAL(selected(AbstractFunction*)), parentWidget(), SLOT(updateSelected(AbstractFunction*)));
+    QObject::connect(color_button, SIGNAL(clicked(bool)), this, SLOT(choseColor()));
 
 
 }
@@ -62,9 +60,11 @@ AbstractFunction::~AbstractFunction()
     delete main_layout;
     delete top_layout;
     delete id_func;
-    delete box;
     delete id_func;
     delete bottom_layout;
+    delete color_button;
+    delete icon_color;
+    delete pix_color;
 }
 
 AbstractFunction *AbstractFunction::loadFunction(const QString & input, QWidget *parent)
@@ -101,6 +101,18 @@ void AbstractFunction::mouseReleaseEvent(QMouseEvent *)
     update();
 }
 
+void AbstractFunction::choseColor()
+{
+    color = QColorDialog::getColor(Qt::green, this);
+    pix_color->fill(color);
+    delete icon_color;
+    icon_color = new QIcon(*pix_color);
+    color_button->setIcon(*icon_color);
+
+
+
+}
+
 void AbstractFunction::new_select(AbstractFunction * new_func)
 {
     if (new_func == this)
@@ -117,9 +129,9 @@ void AbstractFunction::paintEvent(QPaintEvent *)
 {
     QPainter pen(this);
     if (is_selected)
-        pen.fillRect(0, 0, width(), height(), Qt::blue);
-    else
         pen.fillRect(0, 0, width(), height(), Qt::lightGray);
+    else
+        pen.fillRect(0, 0, width(), height(), Qt::lightGray );
 }
 
 

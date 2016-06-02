@@ -11,6 +11,7 @@
 #include <QCheckBox>
 #include <QVector>
 #include <QPainter>
+#include <QColorDialog>
 
 #include <QDebug>
 #include <iostream>
@@ -32,7 +33,7 @@ public:
     inline bool isDrawable() const { return check->isChecked(); }
     inline QString getID() const {return id;}
     inline void setID(const QString& _id) {id=_id;}
-    inline int getColor() const { return COLOR[box->currentIndex()]; }
+    inline QColor getColor() const { return color; }
     inline bool isSelected() const {return is_selected;}
 
 
@@ -41,11 +42,14 @@ public:
 protected :
     QString id;
     bool is_selected;
+    QColor color;
 
     QVBoxLayout* main_layout;
     QHBoxLayout* top_layout;
     QCheckBox* check;
-    QComboBox* box;
+    QPushButton* color_button;
+    QIcon* icon_color;
+    QPixmap* pix_color;
     QLabel* id_func;
     QVBoxLayout* bottom_layout;
 
@@ -59,6 +63,7 @@ protected :
 
 
 public slots :
+    void choseColor();
 
 
 signals :

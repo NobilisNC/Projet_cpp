@@ -137,7 +137,6 @@ void MainWindow::create_function(const QString &input)
 
 void MainWindow::updateSelected(AbstractFunction *func)
 {
-
     for (auto i : storage)
         i->new_select(func);
 

@@ -245,7 +245,7 @@ void RenderArea::drawFunction(AbstractFunction* f)
     if (f->isDrawable()) {
 
 
-        pen->setPen( QPen( QBrush(f->getColor()) , (f->isSelected() ? 2 : 1),  (f->isSelected() ? Qt::DashLine : Qt::SolidLine) ));
+        pen->setPen( QPen( QBrush(f->getColor()) , (f->isSelected() ? 1.5 : 1),  (f->isSelected() ? Qt::DashDotLine : Qt::SolidLine) ));
         QPainterPath path;
         bool path_begin = false;
 
@@ -274,19 +274,21 @@ void RenderArea::drawFunction(AbstractFunction* f)
 
 
         if (f->isSelected()) {
-            float y = f->getOnePoint( ( old_cursor.x() -center.x() ) *unite_per_pix.x());
+
+            float y = f->getOnePoint( (old_cursor.x() -center.x() ) *unite_per_pix.x() );
             pen->drawText(QRect(-center.x(), -center.y(), 100, 50),
                           QString("f(%1)=%2").arg(
                               QString::number( (old_cursor.x() - center.x()  )* unite_per_pix.x()) ,
                               QString::number(y))
                           );
 
-            pen-> setPen(QPen(Qt::lightGray, 2, Qt::DashDotDotLine));
 
-
+            pen-> setPen(QPen(QBrush(Qt::lightGray), 2, Qt::DashDotDotLine));
             pen->drawLine( QPoint( old_cursor.x()-center.x(), 0),
                            QPoint( old_cursor.x()-center.x(), -y * pix_unite.y() /unite.y())
                          );
+
+
 
         }
 
