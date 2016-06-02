@@ -11,24 +11,42 @@ MainWindow::MainWindow(QWidget *parent) :
     top_layout(nullptr),
     bottom_layout(nullptr),
     func_layout(nullptr),
-    spacer(nullptr)
+    func_list(nullptr),
+    func_box(nullptr)
 {
     main_label = new QWidget(this);
     main_layout = new QVBoxLayout;
     top_layout = new QHBoxLayout;
-    func_layout = new QVBoxLayout;
+
 
 
     //FUNC LAYOUT
         //Parameters
-    spacer =  new QSpacerItem(250, width() - (storage.length() * 75));
-    func_layout->insertSpacerItem(0,spacer);
+
 
     //TOP LAYOUT
     area = new RenderArea(this);
 
-    top_layout->addLayout(func_layout);
-    top_layout->addWidget(area,0, Qt::AlignTop);
+    func_layout = new QVBoxLayout;
+    func_list = new QScrollArea(this);
+    func_list->setMinimumSize(QSize(250, height()));
+    func_list->setWidgetResizable(true);
+
+
+    func_box = new QGroupBox(QString("Fonctions :"), this);
+    func_box->setLayout(func_layout);
+    caca_layout = new QVBoxLayout;
+    caca_layout->setAlignment(Qt::AlignTop);
+    func_layout->addLayout(caca_layout);
+
+
+    func_list->setWidget(func_box);
+
+    //func_list->setLayout(func_layout);
+
+    //top_layout->addLayout(func_layout);
+    top_layout->addWidget(func_list);
+    top_layout->addWidget(area);
 
     //BOTTOM LAYOUT
     bottom_layout = new QHBoxLayout;
@@ -124,10 +142,8 @@ void MainWindow::create_function(const QString &input)
     storage.append(f);
     area->add_function(f);
 
-    func_layout->takeAt(-1);
-    spacer =  new QSpacerItem(250, width() - (storage.length() * 75));
-    func_layout->insertSpacerItem(-1,spacer);
-    func_layout->insertWidget(0, f);
+    caca_layout->addWidget(f);
+
 
     } catch (...) {
         std::cerr << "Une erreur est survenue" << std::endl;

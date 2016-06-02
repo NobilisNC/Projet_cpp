@@ -31,12 +31,12 @@ AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
     id_func->setText(QString("%1").arg(id));
 
     pix_color = new QPixmap(10,10);
+    color = randomColor();
+    pix_color->fill(color);
     icon_color = new QIcon(*pix_color);
 
     color_button = new QPushButton(*icon_color,QString(""), this);
 
-
-    setMinimumWidth(250);
 
     top_layout->addWidget(check,0,Qt::AlignLeft);
     top_layout->addWidget(color_button,0,Qt::AlignLeft);
@@ -80,15 +80,7 @@ AbstractFunction *AbstractFunction::loadFunction(const QString & input, QWidget 
 
 }
 
-QSize AbstractFunction::sizeHint() const
-{
-   return QSize(250, 50) ;
-}
 
-QSize AbstractFunction::minimumSizeHint() const
-{
-    return QSize(250, 40);
-}
 
 void AbstractFunction::mouseReleaseEvent(QMouseEvent *)
 {
@@ -129,9 +121,9 @@ void AbstractFunction::paintEvent(QPaintEvent *)
 {
     QPainter pen(this);
     if (is_selected)
-        pen.fillRect(0, 0, width(), height(), Qt::lightGray);
+        pen.fillRect(0, 0, width(), height(), 0xA0A9AA);
     else
-        pen.fillRect(0, 0, width(), height(), Qt::lightGray );
+        pen.fillRect(0, 0, width(), height(), Qt::lightGray);
 }
 
 

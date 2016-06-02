@@ -7,6 +7,9 @@ ParametricFunction::ParametricFunction(const QString& id, const QString& x_formu
       x_label(nullptr),
       y_label(nullptr)
 {
+
+    setMinimumSize(QSize(250, 80));
+
     points = new QPointF[PARAMETRIC_PRECISION];
     float grad = ( bornes.y() - bornes.x() ) / PARAMETRIC_PRECISION;
 

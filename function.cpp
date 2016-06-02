@@ -7,6 +7,8 @@ Function::Function(const QString& _id, const QString & formula, QWidget* _parent
     equation(nullptr),
     rpn_u(nullptr)
 {
+   setMinimumSize(QSize(250, 60));
+
   rpn_u = new RPN_utility( formula.toStdString() );
 
 

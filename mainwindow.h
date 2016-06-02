@@ -13,6 +13,9 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QErrorMessage>
+#include <QListWidget>
+#include <QScrollArea>
+#include <QGroupBox>
 
 #include <renderarea.h>
 #include <abstractfunction.h>
@@ -39,7 +42,9 @@ private:
     QHBoxLayout* top_layout;
     QHBoxLayout* bottom_layout;
     QVBoxLayout* func_layout;
-    QSpacerItem* spacer;
+    QScrollArea* func_list;
+    QGroupBox* func_box;
+    QVBoxLayout* caca_layout;
 
     QMenu* file_menu;
     QAction* open_file;

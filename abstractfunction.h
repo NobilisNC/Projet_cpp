@@ -56,8 +56,6 @@ protected :
 
 
     void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
-    QSize sizeHint() const Q_DECL_OVERRIDE;
-    QSize minimumSizeHint() const Q_DECL_OVERRIDE;
 
     void mouseReleaseEvent(QMouseEvent*);
 

@@ -257,7 +257,7 @@ void RenderArea::drawFunction(AbstractFunction* f)
         for(unsigned i = 0; i < pair.first; i++ ) {
 ;
 
-            int coord_y = -tab[i].y() * pix_unite.y() /unite.y();
+            int coord_y = -tab[i].y() / unite_per_pix.y();
 
             if (!path_begin && tab[i].y() == tab[i].y()) {
                 path.moveTo(tab[i].x() * pix_unite.x() /unite.x() , coord_y);
@@ -267,13 +267,15 @@ void RenderArea::drawFunction(AbstractFunction* f)
                 path = QPainterPath();
                 path_begin = false;
             } else
-                path.lineTo(tab[i].x() * pix_unite.x() /unite.x() , -tab[i].y() * pix_unite.y() /unite.y() );
+                path.lineTo(tab[i].x() * pix_unite.x() /unite.x() , -tab[i].y() / unite_per_pix.y() );
         }
 
         pen->drawPath(path);
 
 
         if (f->isSelected()) {
+
+            pen->setPen(QPen(QBrush(f->getColor()), 0.5, Qt::DashDotDotLine));
 
             float y = f->getOnePoint( (old_cursor.x() -center.x() ) *unite_per_pix.x() );
             pen->drawText(QRect(-center.x(), -center.y(), 100, 50),
@@ -285,9 +287,10 @@ void RenderArea::drawFunction(AbstractFunction* f)
 
             pen-> setPen(QPen(QBrush(Qt::lightGray), 2, Qt::DashDotDotLine));
             pen->drawLine( QPoint( old_cursor.x()-center.x(), 0),
-                           QPoint( old_cursor.x()-center.x(), -y * pix_unite.y() /unite.y())
+                           QPoint( old_cursor.x()-center.x(), -y / unite_per_pix.y() )
                          );
-
+            /*pen->setBrush(QColor(f->getColor()));
+            pen->drawEllipse(QPoint(old_cursor.x()-center.x(), -y / unite_per_pix.y()), 3, 3); */
 
 
         }

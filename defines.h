@@ -1,11 +1,16 @@
 #ifndef DEFINES_H
 #define DEFINES_H
 
+#include <QColor>
+#include <QTime>
+
 
 const unsigned int FUNCTION_PRECISION = 150;
 const unsigned int PARAMETRIC_PRECISION = 300;
 
-const int COLOR[] = { 0xFF0000, 0x00FF00, 0x0000FF, 0xFFFF00, 0xFF00FF, 0x00FFFF };
+QColor randomColor();
+
+
 
 
 #endif // DEFINES_H

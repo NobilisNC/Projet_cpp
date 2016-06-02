@@ -18,7 +18,8 @@ SOURCES += main.cpp \
     function.cpp \
     rpn_utility.cpp \
     parametricfunction.cpp \
-    abstractfunction.cpp
+    abstractfunction.cpp \
+    defines.cpp
 
 HEADERS  += mainwindow.h \
     renderarea.h \

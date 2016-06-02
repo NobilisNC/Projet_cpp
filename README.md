@@ -6,9 +6,13 @@ Pour l'instant :
  - Zoom 95% : Fluidité à amélioré sur le centrage souris
  - Changement de graduation
 
-A faire :
- - Classes fonctions
- - Affichage amélioré (liste des fonctions)
- - Lecture fichier
+
+A FAIRE :
+    - centrage souris
+    - Afficher ou non quadrillage
+    - Sauvegarde
+    - - devant fonction
+    - pi/
+    - zomm désynchro
 
 
