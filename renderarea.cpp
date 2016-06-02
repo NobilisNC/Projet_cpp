@@ -244,7 +244,8 @@ void RenderArea::drawFunction(AbstractFunction* f)
 {
     if (f->isDrawable()) {
 
-        pen->setPen(QPen(QBrush(f->getColor()),1));
+
+        pen->setPen( QPen( QBrush(f->getColor()) , 1 ,  (f->isSelected() ? Qt::DashLine : Qt::SolidLine) ));
         QPainterPath path;
         bool path_begin = false;
 
@@ -271,6 +272,8 @@ void RenderArea::drawFunction(AbstractFunction* f)
 
         pen->drawPath(path);
     }
+
+
 
 
 }

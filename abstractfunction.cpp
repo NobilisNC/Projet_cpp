@@ -5,8 +5,9 @@
 
 
 AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
-    : QPushButton(parent),
+    : QWidget(parent),
       id(_id),
+      is_selected(false),
       main_layout(nullptr),
       top_layout(nullptr),
       check(nullptr),
@@ -30,7 +31,7 @@ AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
     //BOX
     box = new QComboBox;
         //PARAMETERS
-        QPixmap color_Icon(10,10);
+        QPixmap color_Icon(10,8);
 
         for (unsigned i = 0; i < 5; i++) {
             color_Icon.fill(COLOR[i]);
@@ -49,6 +50,9 @@ AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
     main_layout->addLayout(bottom_layout);
 
     setLayout(main_layout);
+
+    QObject::connect(this, SIGNAL(selected(AbstractFunction*)), parentWidget(), SLOT(updateSelected(AbstractFunction*)));
+
 
 }
 
@@ -85,13 +89,37 @@ QSize AbstractFunction::minimumSizeHint() const
     return QSize(250, 55);
 }
 
-/*void AbstractFunction::paintEvent(QPaintEvent *)
+void AbstractFunction::mouseReleaseEvent(QMouseEvent *)
 {
+    is_selected = !is_selected;
+    if (is_selected)
+        emit selected(this);
+    else
+        emit selected(nullptr);
 
-    /*QPainter pen(this);
-    pen.fillRect(0, 0, width(), height(), Qt::lightGray);
+    update();
+}
 
-}*/
+void AbstractFunction::new_select(AbstractFunction * new_func)
+{
+    if (new_func == this)
+        is_selected = true;
+    else
+        is_selected = false;
+
+    update();
+
+}
+
+
+void AbstractFunction::paintEvent(QPaintEvent *)
+{
+    QPainter pen(this);
+    if (is_selected)
+        pen.fillRect(0, 0, width(), height(), Qt::blue);
+    else
+        pen.fillRect(0, 0, width(), height(), Qt::lightGray);
+}
 
 
 

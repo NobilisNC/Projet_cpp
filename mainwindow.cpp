@@ -15,8 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     main_label = new QWidget(this);
     main_layout = new QVBoxLayout;
     top_layout = new QHBoxLayout;
-
     func_layout = new QVBoxLayout;
+
 
     //FUNC LAYOUT
         //Parameters
@@ -114,6 +114,12 @@ void MainWindow::load_file()
 
 }
 
+void MainWindow::updateFunction()
+{
+    for (auto i : storage)
+        i->update();
+}
+
 void MainWindow::create_function(const QString &input)
 {
     try {
@@ -122,14 +128,24 @@ void MainWindow::create_function(const QString &input)
     storage.append(f);
     area->add_function(f);
 
-
     func_layout->addWidget(f);
 
-    //func_layout->setAlignment(f, Qt::AlignTop);
+   func_layout->addSpacing(40);
+
 
 
     } catch (...) {
-        std::cerr << "CACA" << std::endl;
+        std::cerr << "Une erreur est survenue" << std::endl;
     }
+
+}
+
+void MainWindow::updateSelected(AbstractFunction *func)
+{
+
+    for (auto i : storage)
+        i->new_select(func);
+
+    updateFunction();
 
 }

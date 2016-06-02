@@ -28,6 +28,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+
+
 private:
     RenderArea* area;
     QLineEdit* formula;
@@ -46,12 +48,17 @@ private:
 public slots :
     void new_func();
     void load_file();
+    void updateFunction();
 
 
 private :
     QVector<AbstractFunction*> storage;
 
     void create_function(const QString& input);
+
+public slots :
+    void updateSelected(AbstractFunction* func);
+
 
 };
 
