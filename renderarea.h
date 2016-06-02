@@ -67,7 +67,7 @@ private :
 
 
 protected:
-    void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
+    void paintEvent(QPaintEvent *event) Q_DECL_OVERRIDE;
     void wheelEvent(QWheelEvent *) Q_DECL_OVERRIDE;
     void mousePressEvent(QMouseEvent * ) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *) Q_DECL_OVERRIDE;

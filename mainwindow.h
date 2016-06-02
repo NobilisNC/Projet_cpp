@@ -39,6 +39,7 @@ private:
     QHBoxLayout* top_layout;
     QHBoxLayout* bottom_layout;
     QVBoxLayout* func_layout;
+    QSpacerItem* spacer;
 
     QMenu* file_menu;
     QAction* open_file;

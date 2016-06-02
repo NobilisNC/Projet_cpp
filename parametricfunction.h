@@ -17,6 +17,7 @@ public:
 
     static AbstractFunction* loadFunction(const QString&input, QWidget* parent = nullptr);
 
+
     ~ParametricFunction();
 
    std::pair<unsigned, QPointF*>  getPoints(float min, float max);
@@ -27,6 +28,8 @@ private :
     QVBoxLayout* layout;
     QLabel* x_label;
     QLabel* y_label;
+
+    float getOnePoint(float x);
 
 
 };

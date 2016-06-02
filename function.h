@@ -17,6 +17,8 @@ public :
 
     ~Function();
 
+    virtual float getOnePoint(float x);
+
     static AbstractFunction* loadFunction(const QString& input, QWidget* parent = nullptr);
 
 

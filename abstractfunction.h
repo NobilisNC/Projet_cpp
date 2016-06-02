@@ -27,6 +27,7 @@ public:
 
     virtual std::pair<unsigned, QPointF*>  getPoints(float min, float max) = 0;
     void new_select(AbstractFunction* new_func);
+    virtual float getOnePoint(float x) = 0;
 
     inline bool isDrawable() const { return check->isChecked(); }
     inline QString getID() const {return id;}

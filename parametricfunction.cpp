@@ -35,6 +35,9 @@ ParametricFunction::ParametricFunction(const QString& id, const QString& x_formu
     bottom_layout->addWidget(y_label);
 
 
+    setFixedSize(250, 75);
+
+
 }
 
 AbstractFunction *ParametricFunction::loadFunction(const QString & input, QWidget *parent)
@@ -56,4 +59,9 @@ ParametricFunction::~ParametricFunction()
 std::pair<unsigned, QPointF*> ParametricFunction::getPoints(float min, float max)
 {
     return std::make_pair( PARAMETRIC_PRECISION, points) ;
+}
+
+float ParametricFunction::getOnePoint(float x)
+{
+    return .0f;
 }

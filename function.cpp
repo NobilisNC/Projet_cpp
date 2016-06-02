@@ -21,6 +21,11 @@ Function::~Function()
     delete equation;
 }
 
+float Function::getOnePoint(float x)
+{
+    return rpn_u->calc(x);
+}
+
 AbstractFunction *Function::loadFunction(const QString & input, QWidget *parent)
 {
     QStringList list = input.split(QChar(' '));

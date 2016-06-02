@@ -10,7 +10,8 @@ MainWindow::MainWindow(QWidget *parent) :
     main_layout(nullptr),
     top_layout(nullptr),
     bottom_layout(nullptr),
-    func_layout(nullptr)
+    func_layout(nullptr),
+    spacer(nullptr)
 {
     main_label = new QWidget(this);
     main_layout = new QVBoxLayout;
@@ -20,9 +21,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //FUNC LAYOUT
         //Parameters
-
-
-    func_layout->setAlignment(func_layout, Qt::AlignTop);
+    spacer =  new QSpacerItem(250, width() - (storage.length() * 75));
+    func_layout->insertSpacerItem(0,spacer);
 
     //TOP LAYOUT
     area = new RenderArea(this);
@@ -62,10 +62,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     menuBar()->addMenu(file_menu);
-
-
-
-
 
     QObject::connect(bnew_func,SIGNAL(clicked(bool)), this, SLOT(new_func()));
     QObject::connect(open_file, SIGNAL(triggered(bool)), this, SLOT(load_file()));
@@ -128,11 +124,10 @@ void MainWindow::create_function(const QString &input)
     storage.append(f);
     area->add_function(f);
 
-    func_layout->addWidget(f);
-
-   func_layout->addSpacing(40);
-
-
+    func_layout->takeAt(-1);
+    spacer =  new QSpacerItem(250, width() - (storage.length() * 75));
+    func_layout->insertSpacerItem(-1,spacer);
+    func_layout->insertWidget(0, f);
 
     } catch (...) {
         std::cerr << "Une erreur est survenue" << std::endl;

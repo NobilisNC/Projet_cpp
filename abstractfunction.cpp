@@ -50,6 +50,7 @@ AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
     main_layout->addLayout(bottom_layout);
 
     setLayout(main_layout);
+    setFixedSize(QSize(250, 60));
 
     QObject::connect(this, SIGNAL(selected(AbstractFunction*)), parentWidget(), SLOT(updateSelected(AbstractFunction*)));
 
@@ -81,12 +82,12 @@ AbstractFunction *AbstractFunction::loadFunction(const QString & input, QWidget 
 
 QSize AbstractFunction::sizeHint() const
 {
-   return QSize(250, 75) ;
+   return QSize(250, 50) ;
 }
 
 QSize AbstractFunction::minimumSizeHint() const
 {
-    return QSize(250, 55);
+    return QSize(250, 40);
 }
 
 void AbstractFunction::mouseReleaseEvent(QMouseEvent *)
