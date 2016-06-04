@@ -20,6 +20,7 @@ ParametricFunction::ParametricFunction(const QString& id, const QString& x_formu
         points[i].setX(rpn->calc(t));
         t += grad;
     }
+    //x_formula = rpn->getRawForm().utf16();
     delete rpn;
     rpn = new RPN_utility(y_formula);
 
@@ -28,7 +29,7 @@ ParametricFunction::ParametricFunction(const QString& id, const QString& x_formu
         points[i].setY(rpn->calc(t));
         t += grad;
     }
-
+    //y_formula = &QString(rpn->getRawForm());
     delete rpn;
 
     x_label = new QLabel(QString("y=%1").arg(y_formula), this);

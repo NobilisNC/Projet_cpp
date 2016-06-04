@@ -17,6 +17,8 @@ public:
 
     static AbstractFunction* loadFunction(const QString&input, QWidget* parent = nullptr);
 
+    virtual inline QString getFormula() const { return QString("%1 %2").arg(x_formula, y_formula); }
+
 
     ~ParametricFunction();
 
@@ -24,6 +26,8 @@ public:
 
 private :
     QPointF* points;
+    QString x_formula;
+    QString y_formula;
 
     QVBoxLayout* layout;
     QLabel* x_label;

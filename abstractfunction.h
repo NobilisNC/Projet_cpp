@@ -36,6 +36,8 @@ public:
     inline QColor getColor() const { return color; }
     inline bool isSelected() const {return is_selected;}
 
+    virtual QString getFormula() const = 0;
+
 
     static AbstractFunction* loadFunction(const QString&, QWidget* parent = nullptr) ;
 

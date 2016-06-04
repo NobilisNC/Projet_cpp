@@ -273,6 +273,7 @@ void RenderArea::drawFunction(AbstractFunction* f)
             pen->setPen(QPen(QBrush(f->getColor()), 0.5, Qt::DashDotDotLine));
 
             float y = f->getOnePoint( (old_cursor.x() -center.x() ) *unite_per_pix.x() );
+
             pen->drawText(QRect(-center.x(), -center.y(), 150, 50),
                           QString("f(%1)=%2").arg(
                               QString::number( (old_cursor.x() - center.x()  )* unite_per_pix.x()) ,
@@ -281,6 +282,7 @@ void RenderArea::drawFunction(AbstractFunction* f)
 
 
             pen-> setPen(QPen(QBrush(Qt::lightGray), 2, Qt::DashDotDotLine));
+            if (!isinf(y) && !isnan(y))
             pen->drawLine( QPoint( old_cursor.x()-center.x(), 0),
                            QPoint( old_cursor.x()-center.x(), -y / unite_per_pix.y() )
                          );
@@ -319,8 +321,6 @@ void RenderArea::paintEvent(QPaintEvent *  event )
     pen->end();
 
     delete pen;
-
-
 
 }
 

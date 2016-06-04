@@ -18,8 +18,10 @@ public :
     ~Function();
 
     virtual float getOnePoint(float x);
+    virtual inline QString getFormula() const { return rpn_u->getRawForm(); }
 
     static AbstractFunction* loadFunction(const QString& input, QWidget* parent = nullptr);
+
 
 
     std::pair<unsigned, QPointF*> getPoints(float min, float max);
