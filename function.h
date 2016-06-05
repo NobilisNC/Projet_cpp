@@ -12,33 +12,30 @@
 class Function : public AbstractFunction
 {
     Q_OBJECT
-public :
-    explicit Function(const QString& _id, const QString & formula, QWidget* _parent = nullptr );
 
+public :
+
+    explicit Function(const QString& _id, const QString & formula, QWidget* _parent = nullptr );
     ~Function();
 
     virtual float getOnePoint(float x);
     virtual inline QString getFormula() const { return rpn_u->getRawForm(); }
 
+    std::pair<unsigned, QPointF*> getPoints(float min, float max);
+
     static AbstractFunction* loadFunction(const QString& input, QWidget* parent = nullptr);
 
 
+public slots :
 
-    std::pair<unsigned, QPointF*> getPoints(float min, float max);
+     void change();
+
 
 protected :
+
     QString id;
     QLineEdit* equation;
     RPN_utility* rpn_u;
-
-
-
-    void parse_function(QString&);
-
-
-public slots :
-     void change();
-
 
 };
 

@@ -22,14 +22,18 @@
 class AbstractFunction : public QWidget
 {
     Q_OBJECT
+
 public:
+
     explicit AbstractFunction(const QString& _id, QWidget* parent = nullptr);
     virtual ~AbstractFunction();
 
+    void new_select(AbstractFunction* new_func);
+
 
     virtual std::pair<unsigned, QPointF*>  getPoints(float min, float max) = 0;
-    void new_select(AbstractFunction* new_func);
     virtual float getOnePoint(float x) = 0;
+    virtual QString getFormula() const = 0;
 
     inline bool isDrawable() const { return check->isChecked(); }
     inline QString getID() const {return id;}
@@ -37,12 +41,25 @@ public:
     inline QColor getColor() const { return color; }
     inline bool isSelected() const {return is_selected;}
 
-    virtual QString getFormula() const = 0;
-
-
     static AbstractFunction* loadFunction(const QString&, QWidget* parent = nullptr) ;
 
+
+public slots :
+    void choseColor();
+    void changeName();
+    void emit_delete_me();
+
+
+signals :
+    void selected(AbstractFunction* );
+    void delete_me(AbstractFunction*);
+    void needUpdate();
+
+
 protected :
+    void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QMouseEvent*);
+
     QString id;
     bool is_selected;
     QColor color;
@@ -56,28 +73,6 @@ protected :
     QLineEdit* id_func;
     QVBoxLayout* bottom_layout;
     QPushButton* bdelete;
-
-
-
-    void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
-
-    void mouseReleaseEvent(QMouseEvent*);
-
-
-
-public slots :
-    void choseColor();
-    void changeName();
-    void emit_delete_me();
-
-
-signals :
-    void selected(AbstractFunction* );
-    void delete_me(AbstractFunction*);
-
-
-
-
 
 };
 

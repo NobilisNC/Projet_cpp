@@ -18,72 +18,54 @@ MainWindow::MainWindow(QWidget *parent) :
     main_layout = new QVBoxLayout;
     top_layout = new QHBoxLayout;
 
+    //Top layout
+        //Right Side
+        area = new RenderArea(this);
+        //Left side
+        func_layout = new QVBoxLayout;
+        func_list = new QScrollArea(this);
+        func_list->setMinimumSize(QSize(250, height()));
+        func_list->setWidgetResizable(true);
+        func_box = new QGroupBox(QString("Fonctions :"), this);
+        func_box->setLayout(func_layout);
+        secondary_layout = new QVBoxLayout;
+        secondary_layout->setAlignment(Qt::AlignTop);
+        func_layout->addLayout(secondary_layout);
 
+        func_list->setWidget(func_box);
 
-    //FUNC LAYOUT
-        //Parameters
-
-
-    //TOP LAYOUT
-    area = new RenderArea(this);
-
-    func_layout = new QVBoxLayout;
-    func_list = new QScrollArea(this);
-    func_list->setMinimumSize(QSize(250, height()));
-    func_list->setWidgetResizable(true);
-
-
-    func_box = new QGroupBox(QString("Fonctions :"), this);
-    func_box->setLayout(func_layout);
-    caca_layout = new QVBoxLayout;
-    caca_layout->setAlignment(Qt::AlignTop);
-    func_layout->addLayout(caca_layout);
-
-
-    func_list->setWidget(func_box);
-
-    //func_list->setLayout(func_layout);
-
-    //top_layout->addLayout(func_layout);
     top_layout->addWidget(func_list);
     top_layout->addWidget(area);
 
-    //BOTTOM LAYOUT
+    //Bottom layout
     bottom_layout = new QHBoxLayout;
 
-    QLabel* test= new QLabel("Formule :");
+    QLabel* test= new QLabel("Formule :", this);
     formula = new QLineEdit;
     bnew_func = new QPushButton("Nouvelle fonction");
     bottom_layout->addWidget(test);
     bottom_layout->addWidget(formula);
     bottom_layout->addWidget(bnew_func);
 
-
-
-
-
-    //MAIN LAYOUT
+    //Main Layout
     main_layout->addLayout(top_layout);
     main_layout->addLayout(bottom_layout);
 
-
-    //MAIN_LABEL
+    //Main label
     main_label->setLayout(main_layout);
-
     setCentralWidget(main_label);
 
+    //Menu Bar
     file_menu = new QMenu("Fichier",this);
     open_file = new QAction("Ouvrir", this);
     open_file->setShortcut(QKeySequence::Open);
+        //Actions
+        file_menu->addAction(open_file);
+        menuBar()->addMenu(file_menu);
 
-    file_menu->addAction(open_file);
-
-
-    menuBar()->addMenu(file_menu);
-
+    //Connections
     QObject::connect(bnew_func,SIGNAL(clicked(bool)), this, SLOT(new_func()));
     QObject::connect(open_file, SIGNAL(triggered(bool)), this, SLOT(load_file()));
-
 }
 
 MainWindow::~MainWindow()
@@ -112,9 +94,8 @@ void MainWindow::load_file()
 
     QFile file(path);
 
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        return;
-    }
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return; /* need improvement */
 
     QTextStream stream(&file);
 
@@ -122,10 +103,6 @@ void MainWindow::load_file()
         QString line = stream.readLine();
         create_function(line);
     }
-
-
-
-
 }
 
 void MainWindow::updateFunction()
@@ -137,18 +114,28 @@ void MainWindow::updateFunction()
 void MainWindow::create_function(const QString &input)
 {
     try {
+        AbstractFunction* f = AbstractFunction::loadFunction(input,this);
+        storage.append(f);
+        area->add_function(f);
 
-    AbstractFunction* f = AbstractFunction::loadFunction(input,this);
-    storage.append(f);
-    area->add_function(f);
-
-    caca_layout->addWidget(f);
-
-
+        secondary_layout->addWidget(f);
     } catch (...) {
         std::cerr << "Une erreur est survenue" << std::endl;
+        /* need improvement */
     }
+}
 
+void MainWindow::keyPressEvent(QKeyEvent * event)
+{
+    std::cerr << "caca" << std::endl;
+    if (  event->key() == Qt::Key_Up )
+        area->move_up();
+    else if ( event->key() == Qt::Key_Right)
+        area->move_right();
+    else if (event->key() == Qt::Key_Down)
+        area->move_down();
+    else if (event->key() == Qt::Key_Left)
+        area->move_left();
 }
 
 void MainWindow::updateSelected(AbstractFunction *func)
@@ -157,18 +144,18 @@ void MainWindow::updateSelected(AbstractFunction *func)
         i->new_select(func);
 
     updateFunction();
-
 }
 
 void MainWindow::delete_func(AbstractFunction *func)
 {
-
-    std::cerr << "delete_func\n";
-
     for (unsigned i = 0; i < (unsigned) storage.length(); i++ )
         if (storage[i] == func ) {
             storage.remove(i);
             delete func;
         }
+}
 
+void MainWindow::updateFunctions()
+{
+    area->update();
 }

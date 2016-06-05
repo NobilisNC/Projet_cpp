@@ -15,26 +15,22 @@ RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     old_cursor(-1,-1),
     pos_label(nullptr)
 {
+    //Options
     setBackgroundRole(QPalette::Base);
     setMinimumSize(QSize(1000,600));
-    setAutoFillBackground(true);
     setCursor(Qt::CrossCursor);
     setMouseTracking(true);
+        //background
+        setAutoFillBackground(true);
+        QPalette pal = this->palette();
+        pal.setColor(this->backgroundRole(), Qt::white);
+        setPalette(pal);
 
-
-    QPalette pal = this->palette();
-    pal.setColor(this->backgroundRole(), Qt::white);
-    setPalette(pal);
-
+    //Widgets
     pos_label = new QLabel("x:        y:       .",this);
     pos_label->setFixedSize(200,25);
     pos_label->move(width()-150, height() - 25);
     pos_label->raise();
-
-
-
-
-
 }
 
 RenderArea::~RenderArea()
@@ -44,10 +40,8 @@ RenderArea::~RenderArea()
         delete i;
 }
 
-
 void RenderArea::wheelEvent(QWheelEvent *event)
 {
-
     QPoint mouse_pos(event->pos());
     QPointF log_mouse_pos( (mouse_pos.x() - center.x()) * unite_per_pix.x(),
                           (center.y() - mouse_pos.y() ) * unite_per_pix.y()  );
@@ -133,23 +127,19 @@ void RenderArea::wheelEvent(QWheelEvent *event)
     center.setY( (float) center.y() - dist.y() );
     }
 
-
     update();
-
 }
 
 void RenderArea::mousePressEvent(QMouseEvent * )
 {
     drag = true;
     setCursor(Qt::ClosedHandCursor);
-
 }
 
 void RenderArea::mouseReleaseEvent(QMouseEvent *)
 {
     drag = false;
     setCursor(Qt::CrossCursor);
-
 }
 
 void RenderArea::mouseMoveEvent(QMouseEvent *event)
@@ -171,11 +161,7 @@ void RenderArea::mouseMoveEvent(QMouseEvent *event)
 
     update();
     pos_label->update();
-
 }
-
-
-
 
 void RenderArea::move_up()
 {
@@ -266,7 +252,6 @@ void RenderArea::drawFunction(AbstractFunction* f)
 {
     if (f->isDrawable()) {
 
-
         pen->setPen( QPen( QBrush(f->getColor()) , (f->isSelected() ? 1.5 : 1),  (f->isSelected() ? Qt::DashDotLine : Qt::SolidLine) ));
         QPainterPath path;
         bool path_begin = false;
@@ -314,28 +299,19 @@ void RenderArea::drawFunction(AbstractFunction* f)
             pen->drawLine( QPoint( old_cursor.x()-center.x(), 0),
                            QPoint( old_cursor.x()-center.x(), -y / unite_per_pix.y() )
                          );
-
-
         }
-
     }
-
-
-
-
 }
-
 
 void RenderArea::paintEvent(QPaintEvent *  event )
 {
     Q_UNUSED(event)
 
     pen = new QPainter(this);
-
     pen->setPen(QPen(Qt::black,1));
     pen->translate(center);
-
     unite_per_pix = QPointF( unite.x()/pix_unite.x(),  unite.y()/pix_unite.y() );
+
     drawAxes();
 
     for (auto i : ext_function)
@@ -344,11 +320,7 @@ void RenderArea::paintEvent(QPaintEvent *  event )
     for(auto i : intern_func)
         drawFunction(i);
 
-
-
     pen->end();
-
     delete pen;
-
 }
 

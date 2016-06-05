@@ -28,12 +28,27 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+
+public slots :
+
+    void new_func();
+    void load_file();
+    void updateFunction();
+    void updateSelected(AbstractFunction* func);
+    void delete_func(AbstractFunction *func);
+    void updateFunctions();
+
 
 
 
 private:
+
+    void create_function(const QString& input);
+    void keyPressEvent(QKeyEvent*) Q_DECL_OVERRIDE;
+
     RenderArea* area;
     QLineEdit* formula;
     QPushButton* bnew_func;
@@ -44,28 +59,12 @@ private:
     QVBoxLayout* func_layout;
     QScrollArea* func_list;
     QGroupBox* func_box;
-    QVBoxLayout* caca_layout;
+    QVBoxLayout* secondary_layout;
 
     QMenu* file_menu;
     QAction* open_file;
     QAction* quit;
-
-
-public slots :
-    void new_func();
-    void load_file();
-    void updateFunction();
-
-
-private :
     QVector<AbstractFunction*> storage;
-
-    void create_function(const QString& input);
-
-public slots :
-    void updateSelected(AbstractFunction* func);
-    void delete_func(AbstractFunction *func);
-
 
 };
 
