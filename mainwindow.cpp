@@ -159,3 +159,16 @@ void MainWindow::updateSelected(AbstractFunction *func)
     updateFunction();
 
 }
+
+void MainWindow::delete_func(AbstractFunction *func)
+{
+
+    std::cerr << "delete_func\n";
+
+    for (unsigned i = 0; i < (unsigned) storage.length(); i++ )
+        if (storage[i] == func ) {
+            storage.remove(i);
+            delete func;
+        }
+
+}

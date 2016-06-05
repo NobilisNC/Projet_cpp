@@ -36,3 +36,6 @@ QMAKE_CXXFLAGS += -std=c++1y
 DISTFILES += \
     README.md \
     test_functions
+
+RESOURCES += \
+    ressources.qrc

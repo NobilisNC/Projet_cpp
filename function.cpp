@@ -7,18 +7,21 @@ Function::Function(const QString& _id, const QString & formula, QWidget* _parent
     equation(nullptr),
     rpn_u(nullptr)
 {
-   setMinimumSize(QSize(250, 60));
 
   rpn_u = new RPN_utility( formula );
 
 
-  equation = new QLabel(QString("y=%1").arg(rpn_u->getRawForm()));
+  equation = new QLineEdit(QString("y=%1").arg(rpn_u->getRawForm()));
   bottom_layout->addWidget(equation);
+
+
+  QObject::connect(equation, SIGNAL(returnPressed()), this , SLOT(change()));
 
 }
 
 Function::~Function()
 {
+    std::cerr << "~function" << std::endl;
     delete rpn_u;
     delete equation;
 }
@@ -70,6 +73,14 @@ void Function::parse_function(QString& raw_formula)
 
    for(unsigned  i = 0; i < list.length(); i++)
         tab_var[i] = QChar(list[i][0]).toLatin1(); */
+}
+
+void Function::change()
+{
+    QString formula = equation->text();
+    QStringList list = formula.split(QChar('='));
+
+    rpn_u->setFormula(list[1]);
 }
 
 

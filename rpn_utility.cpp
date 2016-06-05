@@ -336,8 +336,7 @@ float RPN_utility::calc(float x)
 
 void RPN_utility::setFormula(const QString &new_form)
 {
-    Q_UNUSED(new_form)
-
+    rpn_formula = parse(new_form).split(QChar(' '), QString::SkipEmptyParts);
 }
 
 

@@ -189,47 +189,63 @@ void RenderArea::move_left()
 }
 
 void RenderArea::drawAxes()
-{
-    pen->drawLine(-center.x(),0, -center.x()+width(), 0);
-    pen->drawLine(0,-center.y(),0,-center.y()+height());
+{    
+    int x_of_y_axe = 0;
+    if (center.x() <= 0)
+        x_of_y_axe = -center.x();
+    else if (center.x() >= width() )
+        x_of_y_axe =  -center.x() + width() ;
+
+    int y_of_x_axe = 0;
+    if (center.y() < 0 )
+        y_of_x_axe = -center.y();
+    else if (center.y() > height() )
+        y_of_x_axe = height() - center.y();
+
+    std::cerr << y_of_x_axe << std::endl << x_of_y_axe << std::endl << " ----" << std::endl;
+
+
+
+    pen->drawLine(-center.x(), y_of_x_axe  , -center.x()+width(), y_of_x_axe);
+    pen->drawLine(x_of_y_axe,-center.y(),x_of_y_axe,-center.y()+height());
 
     // Axe X
     int cpt = 0;
     for (int i = 0; i < width()-center.x() ; i+= pix_unite.x() ) {
-        pen->drawLine(i,-3,i,3);
+        pen->drawLine(i, y_of_x_axe-3,i,y_of_x_axe+3);
         float num_grad = float(cpt)*unite.y();
         if (num_grad)
-            pen->drawText(i-2, -8, QString::number(num_grad));
+            pen->drawText(i-2, y_of_x_axe - (center.y() > 0 ? 8 : -18), QString::number(num_grad));
         else
-           pen->drawText(i+8, -8, QString::number(num_grad));
+           pen->drawText(i+8, y_of_x_axe - (center.y() > 0 ? 8 : -18), QString::number(num_grad));
         cpt++;
     }
 
     cpt = 0;
     for (int i = 0; i > -center.x(); i-= pix_unite.x() ) {
-         pen->drawLine(i,-3,i,3);
+         pen->drawLine(i, y_of_x_axe-3,i, y_of_x_axe+3);
          float num_grad = float(cpt)*unite.y();
          if (num_grad)
-            pen->drawText(i-2, -8, "-" + QString::number(num_grad));
+            pen->drawText(i-2, y_of_x_axe - (center.y() > 0 ? 8 : -18), "-" + QString::number(num_grad));
          cpt++;
     }
 
     // Axe Y
     cpt = 0;
     for (int i = 0; i < height()-center.y(); i += pix_unite.y()) {
-        pen -> drawLine(-3,i,3,i);
+        pen -> drawLine(x_of_y_axe-3,i,x_of_y_axe+3,i);
         float num_grad = float(cpt)*unite.y();
         if (num_grad)
-            pen->drawText(5, i, "-" + QString::number(num_grad));
+            pen->drawText(x_of_y_axe + (x_of_y_axe >= 0 ? 5 : -15), i, "-" + QString::number(num_grad));
         cpt++;
    }
 
     cpt = 0;
     for (int i = 0; i > -center.y(); i -= pix_unite.y()) {
-        pen -> drawLine(-3,i,3,i);
+        pen -> drawLine(x_of_y_axe-3,i,x_of_y_axe+3,i);
         float num_grad = float(cpt)*unite.y();
         if (num_grad)
-            pen->drawText(5, i, QString::number(num_grad));
+            pen->drawText(x_of_y_axe + (x_of_y_axe >= 0 ? 5 : -15), i, QString::number(num_grad));
         cpt++;
    }
 }
@@ -275,7 +291,8 @@ void RenderArea::drawFunction(AbstractFunction* f)
             float y = f->getOnePoint( (old_cursor.x() -center.x() ) *unite_per_pix.x() );
 
             pen->drawText(QRect(-center.x(), -center.y(), 150, 50),
-                          QString("f(%1)=%2").arg(
+                          QString("%1(%2)=%3").arg(
+                              f->getID(),
                               QString::number( (old_cursor.x() - center.x()  )* unite_per_pix.x()) ,
                               QString::number(y))
                           );

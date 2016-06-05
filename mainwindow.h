@@ -64,6 +64,7 @@ private :
 
 public slots :
     void updateSelected(AbstractFunction* func);
+    void delete_func(AbstractFunction *func);
 
 
 };

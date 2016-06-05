@@ -13,7 +13,7 @@ class ParametricFunction : public AbstractFunction
 {
     Q_OBJECT
 public:
-    explicit ParametricFunction(const QString &id, const QString &x_formula, const QString &y_formula, const QPointF bornes, QWidget *parent = nullptr);
+    explicit ParametricFunction(const QString &id, const QString &_x_formula, const QString &_y_formula, const QPointF bornes, QWidget *parent = nullptr);
 
     static AbstractFunction* loadFunction(const QString&input, QWidget* parent = nullptr);
 
@@ -28,12 +28,19 @@ private :
     QPointF* points;
     QString x_formula;
     QString y_formula;
+    QPointF bornes;
 
     QVBoxLayout* layout;
-    QLabel* x_label;
-    QLabel* y_label;
+    QLineEdit* x_equation;
+    QLineEdit* y_equation;
 
     float getOnePoint(float x);
+    void setPoints();
+
+
+public slots :
+     void changeX();
+     void changeY();
 
 
 };

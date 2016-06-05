@@ -28,12 +28,16 @@ public :
 
 protected :
     QString id;
-    QLabel* equation;
+    QLineEdit* equation;
     RPN_utility* rpn_u;
 
 
 
     void parse_function(QString&);
+
+
+public slots :
+     void change();
 
 
 };

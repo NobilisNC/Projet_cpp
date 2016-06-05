@@ -12,6 +12,7 @@
 #include <QVector>
 #include <QPainter>
 #include <QColorDialog>
+#include <QLineEdit>
 
 #include <QDebug>
 #include <iostream>
@@ -52,8 +53,9 @@ protected :
     QPushButton* color_button;
     QIcon* icon_color;
     QPixmap* pix_color;
-    QLabel* id_func;
+    QLineEdit* id_func;
     QVBoxLayout* bottom_layout;
+    QPushButton* bdelete;
 
 
 
@@ -62,12 +64,16 @@ protected :
     void mouseReleaseEvent(QMouseEvent*);
 
 
+
 public slots :
     void choseColor();
+    void changeName();
+    void emit_delete_me();
 
 
 signals :
     void selected(AbstractFunction* );
+    void delete_me(AbstractFunction*);
 
 
 

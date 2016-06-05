@@ -15,7 +15,8 @@ AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
       icon_color(nullptr),
       pix_color(nullptr),
       id_func(nullptr),
-      bottom_layout(nullptr)
+      bottom_layout(nullptr),
+      bdelete(nullptr)
 {
 
     main_layout = new QVBoxLayout(this);
@@ -27,7 +28,7 @@ AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
     check = new QCheckBox;
     check->setChecked(true);
     //ID_FUNC
-    id_func = new QLabel;
+    id_func = new QLineEdit;
     id_func->setText(QString("%1").arg(id));
 
     pix_color = new QPixmap(10,10);
@@ -37,26 +38,33 @@ AbstractFunction::AbstractFunction(const QString & _id, QWidget *parent)
 
     color_button = new QPushButton(*icon_color,QString(""), this);
 
+    bdelete = new QPushButton(QIcon(":/images/delete_button.png"),QString(""),this);
+
+    bdelete->setVisible(false);
+
 
     top_layout->addWidget(check,0,Qt::AlignLeft);
     top_layout->addWidget(color_button,0,Qt::AlignLeft);
     top_layout->addWidget(id_func,0,Qt::AlignLeft);
-    top_layout->addSpacing(width() /2 );
+    top_layout->addWidget(bdelete);
+
 
     main_layout->addLayout(top_layout);
     main_layout->addLayout(bottom_layout);
 
     setLayout(main_layout);
-    setFixedSize(QSize(250, 60));
 
     QObject::connect(this, SIGNAL(selected(AbstractFunction*)), parentWidget(), SLOT(updateSelected(AbstractFunction*)));
+    QObject::connect(bdelete,SIGNAL(clicked(bool)), this, SLOT(emit_delete_me()));
+    QObject::connect(this, SIGNAL(delete_me(AbstractFunction*)), parentWidget(), SLOT(delete_func(AbstractFunction*)));
     QObject::connect(color_button, SIGNAL(clicked(bool)), this, SLOT(choseColor()));
-
+    QObject::connect(id_func, SIGNAL(returnPressed()), this, SLOT(changeName()));
 
 }
 
 AbstractFunction::~AbstractFunction()
 {
+    std::cerr << "~AbstractFunction" << std::endl;
     delete main_layout;
     delete top_layout;
     delete id_func;
@@ -65,6 +73,7 @@ AbstractFunction::~AbstractFunction()
     delete color_button;
     delete icon_color;
     delete pix_color;
+    delete bdelete;
 }
 
 AbstractFunction *AbstractFunction::loadFunction(const QString & input, QWidget *parent)
@@ -93,6 +102,7 @@ void AbstractFunction::mouseReleaseEvent(QMouseEvent *)
     update();
 }
 
+
 void AbstractFunction::choseColor()
 {
     color = QColorDialog::getColor(Qt::green, this);
@@ -105,6 +115,17 @@ void AbstractFunction::choseColor()
 
 }
 
+void AbstractFunction::changeName()
+{
+    id = id_func->text();
+}
+
+void AbstractFunction::emit_delete_me()
+{
+    std::cerr << "emit_delete_me\n";
+    emit delete_me(this);
+}
+
 void AbstractFunction::new_select(AbstractFunction * new_func)
 {
     if (new_func == this)
@@ -113,7 +134,6 @@ void AbstractFunction::new_select(AbstractFunction * new_func)
         is_selected = false;
 
     update();
-
 }
 
 
@@ -125,6 +145,7 @@ void AbstractFunction::paintEvent(QPaintEvent *)
         pen.fillRect(0, 0, width(), height(), 0xA0A9AA);
     else
         pen.fillRect(0, 0, width(), height(), Qt::lightGray);
+
 }
 
 
