@@ -26,7 +26,7 @@ RenderArea::RenderArea(QWidget *parent) : QWidget(parent),
     pal.setColor(this->backgroundRole(), Qt::white);
     setPalette(pal);
 
-    pos_label = new QLabel("x:        y:       :::::",this);
+    pos_label = new QLabel("x:        y:       .",this);
     pos_label->setFixedSize(200,25);
     pos_label->move(width()-150, height() - 25);
     pos_label->raise();
@@ -119,6 +119,19 @@ void RenderArea::wheelEvent(QWheelEvent *event)
     base.setY(base.x());
     current_tab.setY(current_tab.x());
 
+    unite_per_pix = QPointF( unite.x()/pix_unite.x(),  unite.y()/pix_unite.y() );
+
+    QPointF new_log( ( event->pos().x() - center.x() ) * unite_per_pix.x() ,
+                  (center.y() - event->pos().y() ) *unite_per_pix.y() );
+
+    QPointF dist ( ( new_log.x() - log_mouse_pos.x() )/unite_per_pix.y() , ( new_log.y() - log_mouse_pos.y() ) / unite_per_pix.y() );
+
+
+
+    if (dist.x() > 30*unite_per_pix.x() || dist.x() < 30 *unite_per_pix.x()) {
+    center.setX( (float) center.x() + dist.x() );
+    center.setY( (float) center.y() - dist.y() );
+    }
 
 
     update();
@@ -201,8 +214,6 @@ void RenderArea::drawAxes()
         y_of_x_axe = -center.y();
     else if (center.y() > height() )
         y_of_x_axe = height() - center.y();
-
-    std::cerr << y_of_x_axe << std::endl << x_of_y_axe << std::endl << " ----" << std::endl;
 
 
 
