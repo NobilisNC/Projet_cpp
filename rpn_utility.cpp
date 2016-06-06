@@ -77,13 +77,15 @@ RPN_utility::RPN_utility(const QString & raw, const QString & rpn) :
 QString RPN_utility::parse(QString formula)
 {
        first_parser(formula);
+       std::cerr << formula.toStdString() << std::endl;
        second_parser(formula);
+       std::cerr << formula.toStdString() << std::endl;
        third_parser(formula);
-
+        std::cerr << formula.toStdString() << std::endl;
 
        QString RPN_formula = main_parser(formula);
 
-
+       std::cerr << RPN_formula.toStdString() << std::endl;
 
 
        return RPN_formula;
@@ -167,15 +169,52 @@ void RPN_utility::third_parser(QString &form )
 
     for (unsigned i = 0; i  < (unsigned) iss.length(); i++ )
     {
+        std::cerr << " ---- " << iss[i].toStdString() << std::endl;
 
-        //if ( i==0 || (iss[i] == "-" && (iss[i-1].isEmpty() || isoperator(iss[i-1]) || iss[i-1] == "(" ) ))
-        if (iss[i] == "-" && !isnumber(iss[i+1]))
-        {
-            if (iss[i+1].length() > 1) {
+        if(i ==  0 && iss[i] == "-"  && iss[i+1].length() == 1 ) {
+            std::cerr << "i==0" << std::endl;
+            output << " neg ( " << iss[i+1] << " ) ";
+            i++;
+        }  else if (i == 0 && iss[i] == "-" && iss[i+1].length() > 0 ) {
+
+            output << "neg ( " << iss[i+1] << " ";
+            unsigned o = i+2;
+            unsigned cpt_para = 0;
+            bool ok = false;
+            while ( !ok ) {
+                if (iss[o] == "(")
+                    cpt_para++;
+                else if (iss[o] == ")")
+                    cpt_para--;
+
+                output << iss[o] << " ";
+
+                o++;
+                ok = cpt_para == 0;
+            }
+
+            i = o;
+            output << " ) ";
+
+
+
+        }else if (iss[i] == "-" && isoperator(iss[i-1]) ) {
+
+            if (i > 0 && iss[i-1] == "(" ) {
+                std::cerr << "2" << std::endl;
+                output << " neg ( " << iss[i+1] << " ) ";
+                i++;
+            } else if ( iss[i+1].length() == 1 ) {
+                    std::cerr << "3" << std::endl;
+                    output << "neg ( " << iss[i+1] << " ) ";
+                    i++;
+
+            } else {
+                std::cerr << "4" << std::endl;
                 output << "neg ( " << iss[i+1] << " ";
                 unsigned o = i+2;
                 unsigned cpt_para = 0;
-                bool ok;
+                bool ok = false;
                 while ( !ok ) {
                     if (iss[o] == "(")
                         cpt_para++;
@@ -191,19 +230,12 @@ void RPN_utility::third_parser(QString &form )
                 i = o;
                 output << " ) ";
 
-            } else {
-            output << "neg ( " << iss[i+1] << " ) ";
-            i++;
-            }
-
-
-        } else if (iss[i] == "-" && !iss[i][0].isNumber() )  {
-           output << iss[i];
-
+                }
+;
         } else {
-          output << iss[i] << " ";
+            std::cerr << "else" << std::endl;
+            output << " " << iss[i] << " ";
         }
-
     }
 
 
