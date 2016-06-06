@@ -127,7 +127,6 @@ void MainWindow::create_function(const QString &input)
 
 void MainWindow::keyPressEvent(QKeyEvent * event)
 {
-    std::cerr << "caca" << std::endl;
     if (  event->key() == Qt::Key_Up )
         area->move_up();
     else if ( event->key() == Qt::Key_Right)

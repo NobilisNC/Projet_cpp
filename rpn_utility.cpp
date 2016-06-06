@@ -201,16 +201,13 @@ void RPN_utility::third_parser(QString &form )
         }else if (iss[i] == "-" && isoperator(iss[i-1]) ) {
 
             if (i > 0 && iss[i-1] == "(" ) {
-                std::cerr << "2" << std::endl;
                 output << " neg ( " << iss[i+1] << " ) ";
                 i++;
             } else if ( iss[i+1].length() == 1 ) {
-                    std::cerr << "3" << std::endl;
                     output << "neg ( " << iss[i+1] << " ) ";
                     i++;
 
             } else {
-                std::cerr << "4" << std::endl;
                 output << "neg ( " << iss[i+1] << " ";
                 unsigned o = i+2;
                 unsigned cpt_para = 0;
@@ -233,7 +230,6 @@ void RPN_utility::third_parser(QString &form )
                 }
 ;
         } else {
-            std::cerr << "else" << std::endl;
             output << " " << iss[i] << " ";
         }
     }
