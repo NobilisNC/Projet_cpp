@@ -28,7 +28,7 @@ public:
     float calc(float x);
 
     void setFormula(const QString& new_form);
-    inline QString getRawForm() const {return QString::fromUtf16(raw_formula.utf16()); }
+    inline QString getRawForm() const {return raw_formula; }
 
 
 

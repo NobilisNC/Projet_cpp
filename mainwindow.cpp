@@ -60,13 +60,18 @@ MainWindow::MainWindow(QWidget *parent) :
     file_menu = new QMenu("Fichier",this);
     open_file = new QAction("Ouvrir", this);
     open_file->setShortcut(QKeySequence::Open);
+    save_file = new QAction("Sauvegarder", this);
         //Actions
         file_menu->addAction(open_file);
+        file_menu->addAction(save_file);
         menuBar()->addMenu(file_menu);
+
+
 
     //Connections
     QObject::connect(bnew_func,SIGNAL(clicked(bool)), this, SLOT(new_func()));
     QObject::connect(open_file, SIGNAL(triggered(bool)), this, SLOT(load_file()));
+    QObject::connect(save_file, SIGNAL(triggered(bool)), this, SLOT(fsave_file()));
 }
 
 MainWindow::~MainWindow()
@@ -106,6 +111,26 @@ void MainWindow::load_file()
     }
 }
 
+void MainWindow::fsave_file()
+{
+    QString path = QFileDialog::getOpenFileName(this,"Choisir un fichier fonction");
+
+    if (path.isEmpty())
+        return;
+
+    QFile file(path);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return; /* need improvement */
+
+    QTextStream stream(&file);
+
+    for (auto i : storage )
+        stream << i->getFormula() << '\n';
+
+    stream.flush();
+}
+
 void MainWindow::updateFunction()
 {
     for (auto i : storage)
@@ -124,6 +149,8 @@ void MainWindow::create_function(const QString &input)
         std::cerr << "Une erreur est survenue" << std::endl;
         /* need improvement */
     }
+
+    updateFunctions();
 }
 
 void MainWindow::keyPressEvent(QKeyEvent * event)

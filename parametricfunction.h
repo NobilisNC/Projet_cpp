@@ -17,7 +17,7 @@ public:
     explicit ParametricFunction(const QString &id, const QString &_x_formula, const QString &_y_formula, const QPointF bornes, QWidget *parent = nullptr);
     ~ParametricFunction();
 
-    virtual inline QString getFormula() const { return QString("%1 %2").arg(x_formula, y_formula); }
+    virtual inline QString getFormula() const { return QString("Parametric %1 %2 %3 [%4;%5]").arg(id, x_formula, y_formula, QString::number(bornes.x()), QString::number(bornes.y()) ); }
 
     std::pair<unsigned, QPointF*>  getPoints(float min, float max);
 

@@ -19,7 +19,7 @@ public :
     ~Function();
 
     virtual float getOnePoint(float x);
-    virtual inline QString getFormula() const { return rpn_u->getRawForm(); }
+    virtual inline QString getFormula() const { return QString("Function %1 %2").arg(id, rpn_u->getRawForm()); }
 
     std::pair<unsigned, QPointF*> getPoints(float min, float max);
 
@@ -33,7 +33,6 @@ public slots :
 
 protected :
 
-    QString id;
     QLineEdit* equation;
     RPN_utility* rpn_u;
 

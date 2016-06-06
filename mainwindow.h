@@ -19,6 +19,8 @@
 
 #include <renderarea.h>
 #include <abstractfunction.h>
+#include <parametricfunction.h>
+#include <function.h>
 
 
 
@@ -36,6 +38,7 @@ public slots :
 
     void new_func();
     void load_file();
+    void fsave_file();
     void updateFunction();
     void updateSelected(AbstractFunction* func);
     void delete_func(AbstractFunction *func);
@@ -63,6 +66,7 @@ private:
 
     QMenu* file_menu;
     QAction* open_file;
+    QAction* save_file;
     QAction* quit;
     QVector<AbstractFunction*> storage;
 
