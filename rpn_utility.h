@@ -22,9 +22,6 @@ public:
     RPN_utility(const QString& raw, const QString& rpn = QString(""));
 
 
-
-
-
     float calc(float x);
 
     void setFormula(const QString& new_form);

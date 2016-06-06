@@ -39,10 +39,10 @@ public slots :
     void new_func();
     void load_file();
     void fsave_file();
-    void updateFunction();
     void updateSelected(AbstractFunction* func);
     void delete_func(AbstractFunction *func);
     void updateFunctions();
+    void updateFunction();
 
 
 
