@@ -283,7 +283,7 @@ void RenderArea::drawFunction(AbstractFunction* f)
 
         if (f->isSelected()) {
 
-            pen->setPen(QPen(QBrush(f->getColor()), 0.5, Qt::DashDotDotLine));
+            pen->setPen(QPen(QBrush(f->getColor()), 0.5, Qt::DashDotLine));
 
             float y = f->getOnePoint( (old_cursor.x() -center.x() ) *unite_per_pix.x() );
 
