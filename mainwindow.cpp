@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
         func_layout = new QVBoxLayout;
         func_list = new QScrollArea(this);
         func_list->setMinimumSize(QSize(250, height()));
+        func_list->setMaximumWidth(250);
         func_list->setWidgetResizable(true);
         func_box = new QGroupBox(QString("Fonctions :"), this);
         func_box->setLayout(func_layout);

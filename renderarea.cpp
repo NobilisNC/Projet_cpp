@@ -1,6 +1,7 @@
 #include "renderarea.h"
 
 #include <cmath>
+#include <ctgmath>
 #include <iostream>
 #include "function.h"
 
@@ -306,6 +307,8 @@ void RenderArea::drawFunction(AbstractFunction* f)
 void RenderArea::paintEvent(QPaintEvent *  event )
 {
     Q_UNUSED(event)
+
+    pos_label->move(width()-150, height() - 25);
 
     pen = new QPainter(this);
     pen->setPen(QPen(Qt::black,1));

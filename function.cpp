@@ -9,8 +9,6 @@ Function::Function(const QString& _id, const QString & formula, QWidget* _parent
 {
   rpn_u = new RPN_utility( formula );
 
-  setMaximumSize(250, 100);
-
   //Widgets
   equation = new QLineEdit(QString("y=%1").arg(rpn_u->getRawForm()));
   bottom_layout->addWidget(equation);
@@ -51,8 +49,6 @@ void Function::change()
     QStringList list = formula.split(QChar('='));
 
     rpn_u->setFormula(list[1]);
-
-    emit needUpdate();
 }
 
 //Static Function
