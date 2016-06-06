@@ -189,14 +189,13 @@ void RPN_utility::third_parser(QString &form )
             i = o;
             output << " ) ";
 
-
-
-        }else if (iss[i] == "-" && isoperator(iss[i-1]) ) {
-
-            if (i > 0 && iss[i-1] == "(" ) {
+        } else if (i > 0 && iss[i] == "-" && iss[i-1] == "(" ) {
                 output << " neg ( " << iss[i+1] << " ) ";
                 i++;
-            } else if ( iss[i+1].length() == 1 ) {
+        }else if (iss[i] == "-" && isoperator(iss[i-1]) ) {
+
+
+            if ( iss[i+1].length() == 1 ) {
                     output << "neg ( " << iss[i+1] << " ) ";
                     i++;
 
