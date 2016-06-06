@@ -10,6 +10,8 @@ ParametricFunction::ParametricFunction(const QString& id, const QString& _x_form
       x_equation(nullptr),
       y_equation(nullptr)
 {
+    setMaximumSize(250, 100);
+
     setPoints();
 
     y_equation = new QLineEdit(QString("y=%1").arg(y_formula), this);
@@ -74,6 +76,8 @@ void ParametricFunction::changeX()
     x_formula = list[1];
     setPoints();
     x_equation->setText(QString("y=%1").arg(y_formula));
+
+    emit needUpdate();
 }
 
 void ParametricFunction::changeY()
@@ -84,6 +88,8 @@ void ParametricFunction::changeY()
     y_formula = list[1];
     setPoints();
     y_equation->setText(QString("x=%1").arg(x_formula));
+
+    emit needUpdate();
 }
 
 //Static function

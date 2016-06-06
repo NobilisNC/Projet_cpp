@@ -77,16 +77,10 @@ RPN_utility::RPN_utility(const QString & raw, const QString & rpn) :
 QString RPN_utility::parse(QString formula)
 {
        first_parser(formula);
-       std::cerr << formula.toStdString() << std::endl;
        second_parser(formula);
-       std::cerr << formula.toStdString() << std::endl;
        third_parser(formula);
-        std::cerr << formula.toStdString() << std::endl;
 
        QString RPN_formula = main_parser(formula);
-
-       std::cerr << RPN_formula.toStdString() << std::endl;
-
 
        return RPN_formula;
 }
@@ -169,10 +163,7 @@ void RPN_utility::third_parser(QString &form )
 
     for (unsigned i = 0; i  < (unsigned) iss.length(); i++ )
     {
-        std::cerr << " ---- " << iss[i].toStdString() << std::endl;
-
         if(i ==  0 && iss[i] == "-"  && iss[i+1].length() == 1 ) {
-            std::cerr << "i==0" << std::endl;
             output << " neg ( " << iss[i+1] << " ) ";
             i++;
         }  else if (i == 0 && iss[i] == "-" && iss[i+1].length() > 0 ) {
@@ -198,7 +189,7 @@ void RPN_utility::third_parser(QString &form )
 
 
 
-        }else if (iss[i] == "-" && isoperator(iss[i-1]) ) {
+        }else if (iss[i] == "-" && ( isoperator(iss[i-1]) || iss[i-1] == "(" ) ) {
 
             if (i > 0 && iss[i-1] == "(" ) {
                 output << " neg ( " << iss[i+1] << " ) ";

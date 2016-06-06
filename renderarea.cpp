@@ -295,7 +295,7 @@ void RenderArea::drawFunction(AbstractFunction* f)
 
 
             pen-> setPen(QPen(QBrush(Qt::lightGray), 2, Qt::DashDotDotLine));
-            if (!isinf(y) && !isnan(y))
+            if (!std::isinf(y) && !std::isnan(y))
             pen->drawLine( QPoint( old_cursor.x()-center.x(), 0),
                            QPoint( old_cursor.x()-center.x(), -y / unite_per_pix.y() )
                          );
